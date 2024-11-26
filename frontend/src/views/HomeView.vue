@@ -21,7 +21,7 @@ const fetchDotnetData = async () => {
 
 const fetchJavaData = async () => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_JAVA_SERVICE_URL}/`)
+    const response = await axios.get(`${import.meta.env.VITE_JAVA_SERVICE_URL}/api/greetings`)
     javaResponse.value = response.data
     javaDialog.value = true
   } catch (error) {
