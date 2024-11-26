@@ -12,6 +12,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out .
 
-ENV ASPNETCORE_HTTP_PORTS=80
+ARG ASPNETCORE_HTTP_PORTS
+ENV ASPNETCORE_HTTP_PORTS=${ASPNETCORE_HTTP_PORTS}
 
 ENTRYPOINT ["dotnet", "backend.dll"]
