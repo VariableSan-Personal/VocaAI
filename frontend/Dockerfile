@@ -15,9 +15,6 @@ RUN npm install
 
 COPY . .
 
-FROM builder as dev
-CMD ["npm", "run", "dev"]
-
 FROM builder as prod-builder
 RUN npm run build
 
