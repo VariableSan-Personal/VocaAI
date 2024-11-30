@@ -21,17 +21,5 @@ services:
       dockerfile: Dockerfile
       args:
         - VITE_DOTNET_SERVICE_URL=${VITE_DOTNET_SERVICE_URL}
-        - VITE_JAVA_SERVICE_URL=${VITE_JAVA_SERVICE_URL}
     ports:
       - "${FRONTEND_PORT}:80"
-
-  java-backend:
-    image: judgementhc/autosummarize-java-backend:latest
-    env_file: .env
-    build:
-      context: ./java-backend
-      dockerfile: Dockerfile
-    environment:
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
-    ports:
-      - "${JAVA_BACKEND_PORT}:8080"

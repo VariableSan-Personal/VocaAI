@@ -37,46 +37,6 @@ spec:
       targetPort: {{ .Values.dotnet.service.port }}
 {{- end }}
 
-{{- if .Values.java }}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: java-app
-spec:
-  replicas: {{ .Values.java.replicaCount }}
-  selector:
-    matchLabels:
-      app: java-app
-  template:
-    metadata:
-      labels:
-        app: java-app
-    spec:
-      containers:
-        - name: java-app
-          image: "{{ .Values.java.image.repository }}:{{ .Values.java.image.tag }}"
-          imagePullPolicy: {{ .Values.java.image.pullPolicy }}
-          resources:
-            limits:
-              memory: {{ .Values.java.resources.limits.memory }}
-              cpu: {{ .Values.java.resources.limits.cpu }}
-          ports:
-            - containerPort: {{ .Values.java.service.port }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: java-service
-spec:
-  selector:
-    app: java-app
-  ports:
-    - protocol: TCP
-      port: {{ .Values.java.service.port }}
-      targetPort: {{ .Values.java.service.port }}
-  type: ClusterIP
-{{- end }}
-
 {{- if .Values.vue }}
 apiVersion: apps/v1
 kind: Deployment

@@ -5,10 +5,8 @@ ENV PATH /usr/src/node_modules/.bin:$PATH
 
 # inject all environment vars we'll need
 ARG VITE_DOTNET_SERVICE_URL
-ARG VITE_JAVA_SERVICE_URL
 # expose the variable to the finished container
 ENV VITE_DOTNET_SERVICE_URL=${VITE_DOTNET_SERVICE_URL}
-ENV VITE_JAVA_SERVICE_URL=${VITE_JAVA_SERVICE_URL}
 
 COPY package*.json ./
 RUN npm install

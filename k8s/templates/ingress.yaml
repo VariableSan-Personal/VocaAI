@@ -17,13 +17,6 @@ spec:
                 name: {{ .Values.ingress.paths.dotnet.serviceName }}
                 port:
                   number: {{ .Values.ingress.paths.dotnet.servicePort }}
-          - path: {{ .Values.ingress.paths.java.path }}
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ .Values.ingress.paths.java.serviceName }}
-                port:
-                  number: {{ .Values.ingress.paths.java.servicePort }}
           - path: {{ .Values.ingress.paths.frontend.path }}
             pathType: Prefix
             backend:
