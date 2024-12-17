@@ -5,18 +5,27 @@ import (
 	"net/http"
 )
 
-func home(res http.ResponseWriter, _ *http.Request)  {
-  res.Write([]byte("Hello from Snippetbox"))
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello from Snippetbox"))
 }
 
-func main()  {
-  port := ":4000"
-  
-  mux := http.NewServeMux()
-  mux.HandleFunc("/", home)
+func snippetView(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Display a specific snippet..."))
+}
 
-  log.Print("Starting server on " + port)
+func snippetCreate(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Display a form for creating a new snippet..."))
+}
 
-  err := http.ListenAndServe(port, mux)
-  log.Fatal(err)
+func main() {
+
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("GET /", home)
+	mux.HandleFunc("GET /snippet/view", snippetView)
+	mux.HandleFunc("GET /snippet/create", snippetCreate)
+
+	log.Print("starting server on :4000")
+	err := http.ListenAndServe("localhost:4000", mux)
+	log.Fatal(err)
 }
