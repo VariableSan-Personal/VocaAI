@@ -10,8 +10,8 @@ import (
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Server", "Go")
-	w.Write([]byte("Hello from Snippetbox"))
+	response := models.BaseResponse{"message": "Hello from Snippetbox"}
+	json.NewEncoder(w).Encode(response)
 }
 
 func Greetings(w http.ResponseWriter, r *http.Request) {
@@ -22,11 +22,14 @@ func Greetings(w http.ResponseWriter, r *http.Request) {
 func SnippetView(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Category: %v\n", vars["id"])
+	response := models.BaseResponse{"category": vars["id"]}
+	json.NewEncoder(w).Encode(response)
+
 }
 
 func SnippetCreate(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Display a form for creating a new snippet..."))
+	response := models.BaseResponse{"message": "Display a form for creating a new snippet..."}
+	json.NewEncoder(w).Encode(response)
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {

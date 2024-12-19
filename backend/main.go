@@ -1,6 +1,7 @@
 package main
 
 import (
+	"autosummarize/database"
 	"autosummarize/routes"
 	"fmt"
 	"log"
@@ -10,6 +11,7 @@ import (
 func main() {
 	port := "localhost:4000"
 
+	database.InitDatabase()
 	mux := routes.SetupRoutes()
 
 	message := fmt.Sprintf("starting server on %s", port)
