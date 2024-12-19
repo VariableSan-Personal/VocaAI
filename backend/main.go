@@ -2,14 +2,19 @@ package main
 
 import (
 	"autosummarize/routes"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 func main() {
+	port := "localhost:4000"
+
 	mux := routes.SetupRoutes()
 
-	log.Print("starting server on :4000")
-	err := http.ListenAndServe("localhost:4000", mux)
+	message := fmt.Sprintf("starting server on %s", port)
+	fmt.Println(message)
+
+	err := http.ListenAndServe(port, mux)
 	log.Fatal(err)
 }
