@@ -1,8 +1,8 @@
 package main
 
 import (
-	"autosummarize/database"
-	"autosummarize/routes"
+	"ai-vocabulary-builder/database"
+	"ai-vocabulary-builder/routes"
 	"fmt"
 	"log"
 	"net/http"

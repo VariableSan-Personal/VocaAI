@@ -1,7 +1,7 @@
 package database
 
 import (
-	"autosummarize/models"
+	"ai-vocabulary-builder/models"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

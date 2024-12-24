@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"autosummarize/models"
+	"ai-vocabulary-builder/models"
 	"encoding/json"
 	"fmt"
 	"net/http"

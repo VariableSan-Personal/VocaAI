@@ -1,8 +1,8 @@
 package graphql
 
 import (
-	"autosummarize/database"
-	"autosummarize/models"
+	"ai-vocabulary-builder/database"
+	"ai-vocabulary-builder/models"
 
 	"github.com/graphql-go/graphql"
 )

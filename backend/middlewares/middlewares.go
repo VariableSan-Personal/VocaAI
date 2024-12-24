@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"autosummarize/models"
+	"ai-vocabulary-builder/models"
 	"encoding/json"
 	"net/http"
 )

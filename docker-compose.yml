@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    image: judgementhc/autosummarize-backend:latest
+    image: judgementhc/ai-vocabulary-builder-backend:latest
     env_file: .env
     build:
       context: ./backend
@@ -14,7 +14,7 @@ services:
       - "${ASPNETCORE_HTTP_PORTS}:${ASPNETCORE_HTTP_PORTS}"
 
   frontend:
-    image: judgementhc/autosummarize-frontend:latest
+    image: judgementhc/ai-vocabulary-builder-frontend:latest
     env_file: .env
     build:
       context: ./frontend

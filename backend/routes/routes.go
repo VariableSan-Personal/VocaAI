@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"autosummarize/graphql"
-	"autosummarize/handlers"
-	"autosummarize/middlewares"
+	"ai-vocabulary-builder/graphql"
+	"ai-vocabulary-builder/handlers"
+	"ai-vocabulary-builder/middlewares"
 	"net/http"
 
 	"github.com/graphql-go/handler"

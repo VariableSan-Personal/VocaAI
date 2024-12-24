@@ -1,4 +1,4 @@
-module autosummarize
+module ai-vocabulary-builder
 
 go 1.23.4
 

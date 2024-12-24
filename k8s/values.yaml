@@ -1,7 +1,7 @@
 dotnet:
   replicaCount: 1
   image:
-    repository: judgementhc/autosummarize-backend
+    repository: judgementhc/ai-vocabulary-builder-backend
     tag: latest
     pullPolicy: IfNotPresent
   service:
@@ -14,7 +14,7 @@ dotnet:
 vue:
   replicaCount: 1
   image:
-    repository: judgementhc/autosummarize-frontend
+    repository: judgementhc/ai-vocabulary-builder-frontend
     tag: latest
     pullPolicy: IfNotPresent
   service:
