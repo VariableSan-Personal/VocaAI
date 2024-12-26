@@ -18,24 +18,45 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'logo.svg'],
       manifest: {
-        name: 'Name App',
-        short_name: 'Short Name',
-        description: 'Description',
-        theme_color: '#ffffff',
+        theme_color: '#8936FF',
+        background_color: '#2EC6FE',
         icons: [
           {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
+            purpose: 'maskable',
+            sizes: '512x512',
+            src: 'icon512_maskable.png',
             type: 'image/png',
           },
           {
-            src: 'pwa-512x512.png',
+            purpose: 'any',
             sizes: '512x512',
+            src: 'icon512_rounded.png',
             type: 'image/png',
           },
         ],
+        screenshots: [
+          {
+            src: '/screenshots/desktop.png',
+            type: 'image/png',
+            sizes: '2532x1037',
+            form_factor: 'wide',
+          },
+          {
+            src: '/screenshots/mobile.png',
+            type: 'image/png',
+            sizes: '512x1083',
+            form_factor: 'narrow',
+          },
+        ],
+        orientation: 'any',
+        display: 'standalone',
+        lang: 'en-US',
+        name: 'AI Vocabulary Builder',
+        short_name: 'AI Voc',
+        description: 'An application to help users build and enhance their vocabulary using AI',
       },
       workbox: {
+        globPatterns: ['**/*{html,css,js,ico,png,svg}'],
         runtimeCaching: [
           {
             urlPattern: ({ request }) =>
@@ -69,6 +90,17 @@ export default defineConfig({
               cacheName: 'api-cache',
               cacheableResponse: {
                 statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'html-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
               },
             },
           },
