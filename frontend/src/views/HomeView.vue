@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import axios from 'axios'
-import { reactive } from 'vue'
 import ImageUploader from '@/components/ImageUploader.vue'
+import { fetchGreetingMessages, submitFileUpload } from '@/shared'
+import { reactive } from 'vue'
 
 const baseApi = reactive({
   name: 'Base Api',
   response: '',
   dialog: false,
-  url: import.meta.env.VITE_BASE_API,
   file: null,
 })
 
 const fetchBaseApiData = async () => {
   try {
-    const response = await axios.get(`${baseApi.url}/api/v1/greetings`)
+    const response = await fetchGreetingMessages()
     baseApi.response = response.data
     baseApi.dialog = true
   } catch (error) {
@@ -23,7 +22,6 @@ const fetchBaseApiData = async () => {
 
 const uploadImageToBaseApi = async () => {
   if (!baseApi.file) {
-    alert('Please select a file to upload.')
     return
   }
 
@@ -31,11 +29,7 @@ const uploadImageToBaseApi = async () => {
   formData.append('file', baseApi.file)
 
   try {
-    const response = await axios.post(`${baseApi.url}/api/v1/upload`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+    const response = await submitFileUpload(formData)
 
     baseApi.response = response.data
     baseApi.dialog = true
@@ -57,7 +51,9 @@ const uploadImageToBaseApi = async () => {
       </v-col>
 
       <v-col cols="auto">
-        <v-btn color="primary" @click="uploadImageToBaseApi">Upload Image</v-btn>
+        <v-btn color="primary" :disabled="!baseApi.file" @click="uploadImageToBaseApi">
+          Upload Image
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -66,7 +62,7 @@ const uploadImageToBaseApi = async () => {
         <v-card-title>Reponse from {{ baseApi.name }}</v-card-title>
         <v-card-text>{{ baseApi.response }}</v-card-text>
         <v-card-actions>
-          <v-btn color="primary" text="Close" @click="(baseApi.dialog = false)"></v-btn>
+          <v-btn color="primary" text="Close" @click="baseApi.dialog = false"></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
