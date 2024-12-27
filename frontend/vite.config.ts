@@ -1,9 +1,9 @@
-import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
+import { VitePWA } from 'vite-plugin-pwa'
 
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,12 +11,10 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     VitePWA({
-      devOptions: {
-        enabled: true,
-      },
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'logo.svg'],
+
       manifest: {
         theme_color: '#8936FF',
         background_color: '#2EC6FE',
@@ -24,13 +22,13 @@ export default defineConfig({
           {
             purpose: 'maskable',
             sizes: '512x512',
-            src: 'icon512_maskable.png',
+            src: 'maskable-icon-512x512.png',
             type: 'image/png',
           },
           {
             purpose: 'any',
             sizes: '512x512',
-            src: 'icon512_rounded.png',
+            src: 'pwa-512x512.png',
             type: 'image/png',
           },
         ],
@@ -55,8 +53,11 @@ export default defineConfig({
         short_name: 'AI Voc',
         description: 'An application to help users build and enhance their vocabulary using AI',
       },
+
       workbox: {
-        globPatterns: ['**/*{html,css,js,ico,png,svg}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,svg,ico}'],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: ({ request }) =>
@@ -84,7 +85,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/api'),
+            urlPattern: ({ url }) => url.pathname.includes('/api'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'api-cache',
@@ -105,6 +106,17 @@ export default defineConfig({
             },
           },
         ],
+      },
+
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,svg,png,svg,ico}'],
+      },
+
+      devOptions: {
+        enabled: false,
+        navigateFallback: 'index.html',
+        suppressWarnings: true,
+        type: 'module',
       },
     }),
   ],
