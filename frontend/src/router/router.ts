@@ -17,17 +17,17 @@ export const router = createRouter({
         {
           path: '',
           name: 'learn',
-          component: () => import('../views/AboutView.vue'),
+          component: () => import('../views/LearnView.vue'),
         },
         {
           path: PATHS.vocabulary,
           name: 'vocabulary',
-          component: () => import('../views/AboutView.vue'),
+          component: () => import('../views/VocabularyView.vue'),
         },
         {
           path: PATHS.menu,
           name: 'menu',
-          component: () => import('../views/AboutView.vue'),
+          component: () => import('../views/MenuView.vue'),
         },
       ],
     },
