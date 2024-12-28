@@ -1,13 +1,22 @@
-import { fileURLToPath, URL } from 'node:url'
-import { VitePWA } from 'vite-plugin-pwa'
-
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
+import { fileURLToPath, URL } from 'node:url'
+import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
+import vueDevTools from 'vite-plugin-vue-devtools'
+import Layouts from 'vite-plugin-vue-layouts'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    VueRouter({
+      routesFolder: ['src/views'],
+    }),
+    Layouts({
+      defaultLayout: 'base',
+      layoutsDirs: 'src/layouts',
+      pagesDirs: ['src/views'],
+    }),
     vue(),
     vueDevTools(),
     VitePWA({

@@ -10,6 +10,7 @@ const router = useRouter()
     <v-btn icon @click="router.back()">
       <v-icon icon="$mdiArrowLeft"></v-icon>
     </v-btn>
-    <v-app-bar-title>{{ route.name }}</v-app-bar-title>
+
+    <v-app-bar-title v-if="route.meta.title">{{ route.meta.title }}</v-app-bar-title>
   </v-app-bar>
 </template>

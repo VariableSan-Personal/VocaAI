@@ -1,17 +1,22 @@
 <script setup lang="ts">
-const routes = [
+import { useRoute } from 'vue-router'
+import type { RouteNamedMap } from 'vue-router/auto-routes'
+
+const route = useRoute()
+
+const routes: { name: keyof RouteNamedMap; title: string; icon: string }[] = [
   {
-    name: 'learn',
+    name: '/learn',
     title: 'Learn',
     icon: '$mdiTextBox',
   },
   {
-    name: 'vocabulary',
+    name: '/vocabulary',
     title: 'Vocabulary',
     icon: '$mdiBookOpen',
   },
   {
-    name: 'menu',
+    name: '/menu/',
     title: 'Menu',
     icon: '$mdiMenu',
   },
@@ -19,8 +24,8 @@ const routes = [
 </script>
 
 <template>
-  <v-bottom-navigation grow>
-    <v-btn v-for="route in routes" :key="route.title" :to="{ name: route.name }" exact>
+  <v-bottom-navigation grow v-if="!route.meta.hideBottomNav">
+    <v-btn v-for="route in routes" :key="route.title" :to="{ name: route.name }">
       <v-icon :icon="route.icon" class="mb-1"></v-icon>
       <p>{{ route.title }}</p>
     </v-btn>
