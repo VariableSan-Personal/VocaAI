@@ -12,13 +12,13 @@ export class ChatGPTService extends AbstractAIService {
       configFields: [
         {
           name: 'apiKey',
-          label: 'API Ключ',
+          label: 'API Key',
           type: 'text',
           required: true,
         },
-        {
+        /* {
           name: 'model',
-          label: 'Модель',
+          label: 'Model',
           type: 'select',
           required: true,
           options: [
@@ -29,13 +29,13 @@ export class ChatGPTService extends AbstractAIService {
         },
         {
           name: 'temperature',
-          label: 'Температура',
+          label: 'Temperature',
           type: 'number',
           required: true,
           min: 0,
           max: 1,
           defaultValue: 0.7,
-        },
+        }, */
       ],
     }
   }

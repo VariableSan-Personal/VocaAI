@@ -11,9 +11,17 @@ export const useAIStore = defineStore('ai', () => {
   const config = ref<AIServiceConfig | null>(null)
 
   const initService = (type: AIServiceType, serviceConfig: AIServiceConfig) => {
-    currentServiceType.value = type
-    config.value = serviceConfig
-    return factory.createService(type, serviceConfig)
+    try {
+      factory.createService(type, serviceConfig)
+
+      currentServiceType.value = type
+      config.value = serviceConfig
+
+      localStorage.setItem(LocalStorageKeys.SelectedAIService, type)
+      localStorage.setItem(LocalStorageKeys.AIServiceConfig, JSON.stringify(serviceConfig))
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const getCurrentService = () => {

@@ -12,7 +12,7 @@ export class GoogleAIService extends AbstractAIService {
       configFields: [
         {
           name: 'apiKey',
-          label: 'API Ключ',
+          label: 'API Key',
           type: 'text',
           required: true,
         },
@@ -27,7 +27,7 @@ export class GoogleAIService extends AbstractAIService {
         },
         {
           name: 'maxTokens',
-          label: 'Максимум токенов',
+          label: 'Maximum tokens',
           type: 'number',
           required: true,
           min: 1,

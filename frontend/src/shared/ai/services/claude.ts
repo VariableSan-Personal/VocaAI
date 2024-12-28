@@ -12,13 +12,13 @@ export class ClaudeService extends AbstractAIService {
       configFields: [
         {
           name: 'apiKey',
-          label: 'API Ключ',
+          label: 'API Key',
           type: 'text',
           required: true,
         },
         {
           name: 'creativity',
-          label: 'Креативность',
+          label: 'Creativity',
           type: 'number',
           required: true,
           min: 0,

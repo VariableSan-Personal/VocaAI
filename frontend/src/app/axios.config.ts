@@ -1,3 +1,4 @@
+import { LocalStorageKeys } from '@/shared'
 import axios from 'axios'
 
 const httpService = axios.create({
@@ -9,7 +10,7 @@ const httpService = axios.create({
 
 httpService.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem(LocalStorageKeys.Token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
