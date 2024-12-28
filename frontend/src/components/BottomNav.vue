@@ -13,7 +13,7 @@ const routes = [
     icon: '$mdiBookOpen',
   },
   {
-    path: PATHS.menu,
+    path: PATHS.menu.index,
     name: 'Menu',
     icon: '$mdiMenu',
   },

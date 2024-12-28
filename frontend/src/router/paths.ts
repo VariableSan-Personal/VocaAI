@@ -3,6 +3,9 @@ export const PATHS = {
   about: '/about',
   learn: '/learn',
   vocabulary: '/vocabulary',
-  menu: '/menu',
+  menu: {
+    index: '/menu',
+    settings: 'settings',
+  },
   notFound: '/:pathMatch(.*)*',
 }

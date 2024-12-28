@@ -25,9 +25,19 @@ export const router = createRouter({
           component: () => import('../views/VocabularyView.vue'),
         },
         {
-          path: PATHS.menu,
+          path: PATHS.menu.index,
           name: 'menu',
           component: () => import('../views/MenuView.vue'),
+          children: [
+            {
+              path: PATHS.menu.settings,
+              name: 'settings',
+              component: () => import('../views/SettingsView.vue'),
+              meta: {
+                showBack: true,
+              },
+            },
+          ],
         },
       ],
     },

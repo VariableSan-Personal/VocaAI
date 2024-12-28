@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppBar from '@/components/AppBar.vue'
 import BottomNav from '@/components/BottomNav.vue'
 import { useAIStore } from '@/stores'
 import { onMounted } from 'vue'
@@ -13,6 +14,8 @@ onMounted(() => {
 <template>
   <v-responsive>
     <v-app>
+      <AppBar />
+
       <v-main>
         <v-container>
           <router-view></router-view>

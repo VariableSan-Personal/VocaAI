@@ -1,4 +1,5 @@
 import {
+  mdiArrowLeft,
   mdiBone,
   mdiBook,
   mdiBookOpen,
@@ -34,4 +35,5 @@ export default {
   mdiCamera,
   mdiBone,
   mdiFlowerTulip,
+  mdiArrowLeft,
 }
