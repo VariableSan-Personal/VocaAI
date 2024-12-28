@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
 import BottomNav from '@/components/BottomNav.vue'
+import { useAIStore } from '@/stores'
+import { onMounted } from 'vue'
+import { RouterView } from 'vue-router'
+
+onMounted(() => {
+  const aiStore = useAIStore()
+  aiStore.restoreService()
+})
 </script>
 
 <template>
