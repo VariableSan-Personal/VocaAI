@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { router, ROUTES } from '@/router'
+import { router } from '@/router'
 
-router.push(ROUTES.learn)
+router.push({ name: 'learn' })
 </script>

@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { PATHS } from '@/router/paths'
-
 const routes = [
   {
-    path: PATHS.learn,
-    name: 'Learn',
+    name: 'learn',
+    title: 'Learn',
     icon: '$mdiTextBox',
   },
   {
-    path: PATHS.vocabulary,
-    name: 'Vocabulary',
+    name: 'vocabulary',
+    title: 'Vocabulary',
     icon: '$mdiBookOpen',
   },
   {
-    path: PATHS.menu.index,
-    name: 'Menu',
+    name: 'menu',
+    title: 'Menu',
     icon: '$mdiMenu',
   },
 ]
@@ -22,9 +20,9 @@ const routes = [
 
 <template>
   <v-bottom-navigation grow>
-    <v-btn v-for="route in routes" :key="route.path" :to="route.path" exact>
+    <v-btn v-for="route in routes" :key="route.title" :to="{ name: route.name }" exact>
       <v-icon :icon="route.icon" class="mb-1"></v-icon>
-      <p>{{ route.name }}</p>
+      <p>{{ route.title }}</p>
     </v-btn>
   </v-bottom-navigation>
 </template>

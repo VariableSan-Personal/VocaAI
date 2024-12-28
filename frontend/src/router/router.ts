@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { PATHS } from './paths'
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,7 +9,7 @@ export const router = createRouter({
     },
 
     {
-      path: PATHS.learn,
+      path: '/learn',
       component: () => import('../layouts/BaseLayout.vue'),
 
       children: [
@@ -20,17 +19,17 @@ export const router = createRouter({
           component: () => import('../views/LearnView.vue'),
         },
         {
-          path: PATHS.vocabulary,
+          path: '/vocabulary',
           name: 'vocabulary',
           component: () => import('../views/VocabularyView.vue'),
         },
         {
-          path: PATHS.menu.index,
+          path: '/menu',
           name: 'menu',
           component: () => import('../views/MenuView.vue'),
           children: [
             {
-              path: PATHS.menu.settings,
+              path: 'settings',
               name: 'settings',
               component: () => import('../views/SettingsView.vue'),
               meta: {
@@ -43,7 +42,7 @@ export const router = createRouter({
     },
 
     {
-      path: PATHS.notFound,
+      path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/NotFoundView.vue'),
     },
