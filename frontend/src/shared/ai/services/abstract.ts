@@ -1,21 +1,20 @@
-import type { AIServiceConfig, ServiceMetadata } from '../lib'
+import { type AIServiceConfig, type ConfigField } from '../lib'
 
 export abstract class AbstractAIService {
   protected config: AIServiceConfig
 
   constructor(config: AIServiceConfig) {
-    this.validateConfig(config)
     this.config = config
   }
 
   abstract generateSuggestion(prompt: string): Promise<string>
   abstract getName(): string
-  abstract getMetadata(): ServiceMetadata
+  abstract getConfigFields(): ConfigField[]
 
   protected validateConfig(config: AIServiceConfig): void {
-    const metadata = this.getMetadata()
+    const configFields = this.getConfigFields()
 
-    for (const field of metadata.configFields) {
+    for (const field of configFields) {
       if (field.required && !config[field.name]) {
         throw new Error(`Missing required field: ${field.label}`)
       }

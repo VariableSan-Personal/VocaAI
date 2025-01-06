@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useAIStore = defineStore('ai', () => {
-  const currentServiceType = ref<AIServiceType | null>(null)
+  const currentServiceType = ref<AIServiceType>(AIServiceType.ChatGPT)
   const factory = AIServiceFactory.getInstance()
   const config = ref<AIServiceConfig | null>(null)
 
@@ -22,6 +22,10 @@ export const useAIStore = defineStore('ai', () => {
 
   const getCurrentService = () => {
     return factory.getCurrentService()
+  }
+
+  const getConfigFieldsByServiceName = (serviceName: AIServiceType) => {
+    return factory.createService(serviceName, {})?.getConfigFields()
   }
 
   const restoreService = () => {
@@ -40,5 +44,6 @@ export const useAIStore = defineStore('ai', () => {
     initService,
     getCurrentService,
     restoreService,
+    getConfigFieldsByServiceName,
   }
 })

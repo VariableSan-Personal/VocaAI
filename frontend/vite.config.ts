@@ -16,6 +16,7 @@ export default defineConfig({
       defaultLayout: 'base',
       layoutsDirs: 'src/layouts',
       pagesDirs: ['src/views'],
+      importMode: () => 'async',
     }),
     vue(),
     vueDevTools(),

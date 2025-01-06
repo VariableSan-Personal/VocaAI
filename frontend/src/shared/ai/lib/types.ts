@@ -9,12 +9,6 @@ export interface ConfigField {
   max?: number
 }
 
-export interface ServiceMetadata {
-  name: string
-  configFields: ConfigField[]
-}
-
 export interface AIServiceConfig {
-  apiKey: string
   [key: string]: unknown
 }

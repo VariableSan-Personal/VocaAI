@@ -3,3 +3,5 @@ definePage({
   redirect: { name: '/learn' },
 })
 </script>
+
+<template></template>
