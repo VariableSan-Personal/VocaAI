@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { AIServiceConfig } from '@/shared/ai/lib'
 import { AIServiceType } from '@/shared/ai/lib/constants'
+import { useGlobalStore } from '@/stores'
 import { useAIStore } from '@/stores/useAIStore'
 import { reactive, ref } from 'vue'
 
@@ -13,6 +14,7 @@ definePage({
 })
 
 const aiStore = useAIStore()
+const { showNotification } = useGlobalStore()
 
 const selectedService = ref(aiStore.currentServiceType)
 const aiConfig = reactive<AIServiceConfig>({
@@ -23,7 +25,11 @@ const items = Object.values(AIServiceType)
 
 const handleServiceChange = () => {
   if (selectedService.value && aiConfig) {
-    aiStore.initService(selectedService.value, aiConfig)
+    try {
+      aiStore.initService(selectedService.value, aiConfig)
+    } catch (error) {
+      showNotification(error as string)
+    }
   }
 }
 </script>

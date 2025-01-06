@@ -1,9 +1,9 @@
-import { defineStore } from 'pinia'
-import { AIServiceFactory } from '@/shared/ai/services/factory'
+import { LocalStorageKeys } from '@/shared'
 import { AIServiceType } from '@/shared/ai/lib/constants'
 import type { AIServiceConfig } from '@/shared/ai/lib/types'
+import { AIServiceFactory } from '@/shared/ai/services/factory'
+import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { LocalStorageKeys } from '@/shared'
 
 export const useAIStore = defineStore('ai', () => {
   const currentServiceType = ref<AIServiceType | null>(null)
@@ -11,17 +11,13 @@ export const useAIStore = defineStore('ai', () => {
   const config = ref<AIServiceConfig | null>(null)
 
   const initService = (type: AIServiceType, serviceConfig: AIServiceConfig) => {
-    try {
-      factory.createService(type, serviceConfig)
+    factory.createService(type, serviceConfig)
 
-      currentServiceType.value = type
-      config.value = serviceConfig
+    currentServiceType.value = type
+    config.value = serviceConfig
 
-      localStorage.setItem(LocalStorageKeys.SelectedAIService, type)
-      localStorage.setItem(LocalStorageKeys.AIServiceConfig, JSON.stringify(serviceConfig))
-    } catch (error) {
-      console.error(error)
-    }
+    localStorage.setItem(LocalStorageKeys.SelectedAIService, type)
+    localStorage.setItem(LocalStorageKeys.AIServiceConfig, JSON.stringify(serviceConfig))
   }
 
   const getCurrentService = () => {
