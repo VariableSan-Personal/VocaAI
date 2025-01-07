@@ -21,7 +21,6 @@ export class ClaudeService extends AbstractAIService {
 				required: true,
 				min: 0,
 				max: 100,
-				defaultValue: 50,
 			},
 		]
 	}

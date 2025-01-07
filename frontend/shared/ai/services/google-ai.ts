@@ -21,7 +21,6 @@ export class GoogleAIService extends AbstractAIService {
 				required: true,
 				min: 0,
 				max: 1,
-				defaultValue: 0.5,
 			},
 			{
 				name: 'maxTokens',
@@ -30,7 +29,6 @@ export class GoogleAIService extends AbstractAIService {
 				required: true,
 				min: 1,
 				max: 4096,
-				defaultValue: 2048,
 			},
 		]
 	}

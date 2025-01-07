@@ -23,7 +23,6 @@ export class ChatGPTService extends AbstractAIService {
 					{ value: 'gpt-4', label: 'GPT-4' },
 					{ value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
 				],
-				defaultValue: 'gpt-4',
 			},
 			{
 				name: 'temperature',
@@ -32,7 +31,6 @@ export class ChatGPTService extends AbstractAIService {
 				required: true,
 				min: 0,
 				max: 1,
-				defaultValue: 0.7,
 			},
 		]
 	}
