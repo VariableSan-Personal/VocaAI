@@ -12,8 +12,7 @@ export default defineNuxtConfig({
 		'@vite-pwa/nuxt',
 		(_options, nuxt) => {
 			nuxt.hooks.hook('vite:extendConfig', (config) => {
-				// @ts-expect-error
-				config.plugins.push(vuetify({ autoImport: true }))
+				config.plugins?.push(vuetify({ autoImport: true }))
 			})
 		},
 	],
@@ -32,7 +31,7 @@ export default defineNuxtConfig({
 	},
 	runtimeConfig: {
 		public: {
-			baseURL: 'http://localhost:4000/api/v1',
+			baseUrl: 'http://localhost:4000/api/v1',
 		},
 	},
 	alias: {

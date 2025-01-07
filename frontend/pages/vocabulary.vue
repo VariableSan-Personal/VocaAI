@@ -40,12 +40,12 @@
 				</v-list-item>
 
 				<v-list-item v-for="(item, index) in categories" :key="index">
-					<template v-slot:prepend>
+					<template #prepend>
 						<v-icon :color="item.iconColor">{{ item.icon }}</v-icon>
 					</template>
 					<v-list-item-title>{{ item.title }}</v-list-item-title>
 					<v-list-item-subtitle>{{ item.words }} words</v-list-item-subtitle>
-					<template v-slot:append>
+					<template #append>
 						<span v-if="item.progress" class="text-grey">{{ item.progress }}%</span>
 					</template>
 				</v-list-item>
@@ -55,7 +55,7 @@
 
 			<v-list>
 				<v-list-group v-model="generalList">
-					<template v-slot:activator="{ props }">
+					<template #activator="{ props }">
 						<v-list-item
 							v-bind="props"
 							prepend-icon="mdi-book"
@@ -65,7 +65,7 @@
 				</v-list-group>
 
 				<v-list-group v-model="oxfordList">
-					<template v-slot:activator="{ props }">
+					<template #activator="{ props }">
 						<v-list-item
 							v-bind="props"
 							prepend-icon="mdi-book"

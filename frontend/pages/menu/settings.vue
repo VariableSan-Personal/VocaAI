@@ -49,7 +49,7 @@
 
 		<v-list v-if="configFields?.length" class="mb-4">
 			<v-list-item v-for="(item, index) in configFields" :key="index">
-				<v-text-field :label="item.label" v-model="aiConfig[item.name]"></v-text-field>
+				<v-text-field v-model="aiConfig[item.name]" :label="item.label"></v-text-field>
 			</v-list-item>
 		</v-list>
 

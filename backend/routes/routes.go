@@ -47,7 +47,7 @@ func setupApiV1(router *mux.Router) {
 	apiV1.Path("/snippet/view/{id}").HandlerFunc(handlers.SnippetView).Methods(http.MethodGet)
 	apiV1.Path("/snippet/create").HandlerFunc(handlers.SnippetCreate).Methods(http.MethodPost)
 
-	apiV1.Path("/upload").Handler(middlewares.MultipartFormMiddleware(http.HandlerFunc(handlers.UploadHandler))).Methods(http.MethodPost)
+	apiV1.Path("/upload").HandlerFunc(handlers.UploadHandler).Methods(http.MethodPost)
 }
 
 func setupGraphql(router *mux.Router) {

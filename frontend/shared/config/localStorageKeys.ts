@@ -1,5 +1,5 @@
 export enum LocalStorageKeys {
-  SelectedAIService = 'selectedAIService',
-  AIServiceConfig = 'aiServiceConfig',
-  Token = 'token',
+	SelectedAIService = 'selectedAIService',
+	AIServiceConfig = 'aiServiceConfig',
+	Token = 'token',
 }

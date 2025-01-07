@@ -24,6 +24,29 @@
 			subtitle: 'Both new words and words for review will appear',
 		},
 	]
+
+	const { showNotification } = useGlobalStore()
+
+	const file = ref<File>()
+
+	const uploadImage = async () => {
+		if (!file.value) {
+			showNotification('File is empty')
+			return
+		}
+
+		const formData = new FormData()
+
+		formData.append('file', file.value)
+
+		const { data } = await useAPIFetch('/upload', {
+			method: 'POST',
+			body: formData,
+			responseType: 'json',
+		})
+
+		console.info(data.value)
+	}
 </script>
 
 <template>
@@ -31,6 +54,12 @@
 		<section>
 			<h6 class="text-subtitle-1 text-secondary mb-1">Spaced repetition</h6>
 			<v-list :items="spacedRepetitionList" item-props rounded="lg" lines="two"></v-list>
+		</section>
+
+		<section>
+			<ImageUploader v-model="file" />
+
+			<v-btn color="success" @click="uploadImage">upload the image</v-btn>
 		</section>
 	</v-container>
 </template>

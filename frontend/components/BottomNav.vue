@@ -19,7 +19,7 @@
 </script>
 
 <template>
-	<v-bottom-navigation grow v-if="!$route.meta.hideBottomNav">
+	<v-bottom-navigation v-if="!$route.meta.hideBottomNav" grow>
 		<v-btn v-for="route in routes" :key="route.title" :to="{ name: route.name }">
 			<v-icon :icon="route.icon" class="mb-1"></v-icon>
 			<p>{{ route.title }}</p>
