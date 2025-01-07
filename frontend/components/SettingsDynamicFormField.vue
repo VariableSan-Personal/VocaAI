@@ -5,7 +5,7 @@
 		field: ConfigField
 	}>()
 
-	const modelValue = defineModel<never>()
+	const modelValue = defineModel<unknown>()
 </script>
 
 <template>
@@ -22,7 +22,7 @@
 
 		<v-number-input
 			v-else-if="field.type === 'number'"
-			v-model="modelValue"
+			v-model="(modelValue as number)!"
 			:label="field.label"
 			type="number"
 			:required="field.required"

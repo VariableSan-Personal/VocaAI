@@ -14,5 +14,5 @@ export interface ConfigField {
 }
 
 export interface AIServiceConfig {
-	[key: string]: never
+	[key: string]: unknown
 }

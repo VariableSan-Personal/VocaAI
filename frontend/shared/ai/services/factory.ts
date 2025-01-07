@@ -1,8 +1,8 @@
-import { AIServiceType, type AIServiceConfig } from '../lib'
+import { AIServiceType, type AIServiceConfig, type ConfigField } from '../lib'
 import type { AbstractAIService } from './abstract'
 import { ChatGPTService } from './chatgpt'
 import { ClaudeService } from './claude'
-import { GoogleAIService } from './google-ai'
+import { GeminiService } from './gemini'
 
 export class AIServiceFactory {
 	private static instance: AIServiceFactory
@@ -25,13 +25,22 @@ export class AIServiceFactory {
 			case AIServiceType.Claude:
 				this.currentService = new ClaudeService(config)
 				break
-			case AIServiceType.GoogleAI:
-				this.currentService = new GoogleAIService(config)
+			case AIServiceType.Gemini:
+				this.currentService = new GeminiService(config)
 				break
-			default:
-				throw new Error('Unknown service type')
 		}
 		return this.currentService
+	}
+
+	getServiceConfigFields(type: AIServiceType): ConfigField[] {
+		switch (type) {
+			case AIServiceType.ChatGPT:
+				return new ChatGPTService({}, false).getConfigFields()
+			case AIServiceType.Claude:
+				return new ClaudeService({}, false).getConfigFields()
+			case AIServiceType.Gemini:
+				return new GeminiService({}, false).getConfigFields()
+		}
 	}
 
 	getCurrentService(): AbstractAIService | null {

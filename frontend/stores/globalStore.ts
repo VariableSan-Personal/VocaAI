@@ -10,18 +10,17 @@ export const useGlobalStore = defineStore('global', () => {
 		timeout: 3000,
 	})
 
-	const showNotification = (message: string, params?: Partial<Notification>) => {
+	const showNotification = (
+		message: string,
+		params?: Pick<Partial<Notification>, 'color' | 'timeout'>
+	) => {
 		notification.message = message
 		notification.show = true
 
-		if (!params) {
-			return
-		}
-
-		if (params.color) {
+		if (params?.color) {
 			notification.color = params.color
 		}
-		if (params.timeout) {
+		if (params?.timeout) {
 			notification.timeout = params.timeout
 		}
 	}

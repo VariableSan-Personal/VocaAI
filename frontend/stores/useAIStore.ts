@@ -25,7 +25,7 @@ export const useAIStore = defineStore('ai', () => {
 	}
 
 	const getConfigFieldsByServiceName = (serviceName: AIServiceType) => {
-		return factory.createService(serviceName, {})?.getConfigFields()
+		return factory.getServiceConfigFields(serviceName)
 	}
 
 	const restoreService = () => {

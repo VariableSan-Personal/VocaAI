@@ -3,7 +3,10 @@ import type { AIServiceConfig, ConfigField } from '../lib'
 export abstract class AbstractAIService {
 	protected config: AIServiceConfig
 
-	constructor(config: AIServiceConfig) {
+	constructor(config: AIServiceConfig, instantValidation = true) {
+		if (instantValidation) {
+			this.validateConfig(config)
+		}
 		this.config = config
 	}
 
@@ -11,7 +14,7 @@ export abstract class AbstractAIService {
 	abstract getName(): string
 	abstract getConfigFields(): ConfigField[]
 
-	protected validateConfig(config: AIServiceConfig): void {
+	validateConfig(config: AIServiceConfig): void {
 		const configFields = this.getConfigFields()
 
 		for (const field of configFields) {

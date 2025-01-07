@@ -25,13 +25,21 @@
 		},
 	]
 
-	const { showNotification } = useGlobalStore()
+	const { getCurrentService } = useAIStore()
 
-	const file = ref<File>()
+	const prompt = ref('')
+
+	const generateSomething = async () => {
+		const res = await getCurrentService()?.generateSuggestion(prompt.value)
+		console.info(res)
+	}
 </script>
 
 <template>
 	<v-container>
+		<v-btn color="warning" @click="generateSomething">Generate something</v-btn>
+		<v-text-field name="prompt" label="Prompt" v-model="prompt"></v-text-field>
+
 		<section>
 			<h6 class="text-subtitle-1 text-secondary mb-1">Spaced repetition</h6>
 			<v-list :items="spacedRepetitionList" item-props rounded="lg" lines="two"></v-list>

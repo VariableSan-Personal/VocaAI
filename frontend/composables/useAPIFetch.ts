@@ -1,12 +1,13 @@
-import { useFetch } from '#app'
+import type { FetchOptions } from 'ofetch'
+import { ofetch } from 'ofetch'
 import { LocalStorageKeys } from '~/shared'
 
-type useFetchType = typeof useFetch
-
-export const useAPIFetch: useFetchType = (path, options = {}) => {
+export function useAPIFetch<T>(url: string, options?: FetchOptions): Promise<T> {
 	const config = useRuntimeConfig()
 
-	return useFetch(path, {
+	const customFetch = ofetch.create({ baseURL: config.public.baseUrl })
+
+	return customFetch(url, {
 		baseURL: config.public.baseUrl as string,
 		onRequest({ options }) {
 			const token = localStorage.getItem(LocalStorageKeys.Token)
@@ -15,5 +16,5 @@ export const useAPIFetch: useFetchType = (path, options = {}) => {
 			}
 		},
 		...options,
-	})
+	}) as Promise<T>
 }
