@@ -5,21 +5,21 @@
 
 	const spacedRepetitionList: VListItemProps[] = [
 		{
-			prependIcon: '$mdiPencil',
+			prependIcon: 'mdi-pencil',
 			title: '1 category chosen',
 		},
 		{
-			prependIcon: '$mdiPlus',
+			prependIcon: 'mdi-plus',
 			title: 'Learn new words',
 			subtitle: 'Learned today: 0 of 10',
 		},
 		{
-			prependIcon: '$mdiTimelapse',
+			prependIcon: 'mdi-timelapse',
 			title: 'Review words',
 			subtitle: 'Words to review: 178',
 		},
 		{
-			prependIcon: '$mdiLightbulb',
+			prependIcon: 'mdi-lightbulb',
 			title: 'Mixed mode',
 			subtitle: 'Both new words and words for review will appear',
 		},
