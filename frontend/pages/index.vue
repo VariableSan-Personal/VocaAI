@@ -1,7 +1,7 @@
 <script setup lang="ts">
-definePage({
-  redirect: { name: '/learn' },
-})
+	definePageMeta({
+		redirect: { name: 'learn' },
+	})
 </script>
 
 <template></template>
