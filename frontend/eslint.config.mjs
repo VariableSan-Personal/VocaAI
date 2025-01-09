@@ -8,7 +8,7 @@ export default withNuxt(
 		},
 		rules: {
 			'prettier/prettier': [
-				'lf',
+				'off',
 				{
 					endOfLine: 'auto',
 				},

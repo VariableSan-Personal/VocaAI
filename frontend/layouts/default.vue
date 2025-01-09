@@ -2,7 +2,7 @@
 	import { useAIStore, useGlobalStore } from '@/stores'
 
 	const aiStore = useAIStore()
-	const { notification, showNotification } = useGlobalStore()
+	const { showNotification } = useGlobalStore()
 
 	onMounted(() => {
 		try {
@@ -14,31 +14,15 @@
 </script>
 
 <template>
-	<v-responsive>
-		<v-app>
-			<AppBar />
+	<div class="flex min-h-screen w-full flex-col">
+		<Header />
 
-			<v-main>
-				<v-container>
-					<slot></slot>
-				</v-container>
-			</v-main>
+		<main class="container mx-auto flex-1 p-4">
+			<slot></slot>
+		</main>
 
-			<BottomNav />
+		<Footer />
 
-			<v-snackbar
-				v-model="notification.show"
-				:color="notification.color"
-				:timeout="notification.timeout"
-			>
-				{{ notification.message }}
-			</v-snackbar>
-		</v-app>
-	</v-responsive>
+		<Notification />
+	</div>
 </template>
-
-<style>
-	.header-link {
-		color: rgba(var(--v-theme-on-background), 1);
-	}
-</style>

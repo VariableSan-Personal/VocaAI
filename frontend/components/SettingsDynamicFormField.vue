@@ -30,8 +30,8 @@
 			:max="field.max"
 			:step="0.1"
 			:reverse="false"
-			controlVariant="default"
-			:hideInput="false"
+			control-variant="default"
+			:hide-input="false"
 			:inset="false"
 		/>
 

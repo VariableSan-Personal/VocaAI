@@ -6,7 +6,7 @@ export const useGlobalStore = defineStore('global', () => {
 	const notification = reactive<Notification>({
 		show: false,
 		message: '',
-		color: 'blue',
+		color: 'success',
 		timeout: 3000,
 	})
 

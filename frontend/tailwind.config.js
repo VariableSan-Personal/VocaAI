@@ -3,7 +3,11 @@ export default {
 	content: [],
 	prefix: '',
 	theme: {
-		extend: {},
+		extend: {
+			colors: {
+				secondary: '#808080',
+			},
+		},
 	},
 	plugins: [require('daisyui')],
 	daisyui: {
