@@ -29,16 +29,10 @@
 		const res = await getCurrentService()?.generateSuggestion(prompt.value)
 		console.info(res)
 	}
-
-	const changeTheTheme = () => {}
 </script>
 
 <template>
 	<v-container>
-		<button class="btn" @click="changeTheTheme">
-      change the theme
-    </button>
-
 		<v-btn color="warning" @click="generateSomething">Generate something</v-btn>
 		<v-text-field name="prompt" label="Prompt" v-model="prompt"></v-text-field>
 

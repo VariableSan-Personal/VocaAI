@@ -10,6 +10,15 @@ export const useGlobalStore = defineStore('global', () => {
 		timeout: 3000,
 	})
 
+	const isDark = useDark({
+		selector: 'html',
+		attribute: 'data-theme',
+		valueDark: 'dark',
+		valueLight: 'light',
+	})
+
+	const toggleDark = useToggle(isDark)
+
 	const showNotification = (
 		message: string,
 		params?: Pick<Partial<Notification>, 'color' | 'timeout'>
@@ -27,6 +36,8 @@ export const useGlobalStore = defineStore('global', () => {
 
 	return {
 		notification,
+		isDark,
 		showNotification,
+		toggleDark,
 	}
 })
