@@ -1,9 +1,5 @@
 <script setup lang="ts">
-	import type { VListItem } from 'vuetify/components'
-
-	type VListItemProps = VListItem['$props']
-
-	const spacedRepetitionList: VListItemProps[] = [
+	const spacedRepetitionList = [
 		{
 			prependIcon: 'mdi-pencil',
 			title: '1 category chosen',
