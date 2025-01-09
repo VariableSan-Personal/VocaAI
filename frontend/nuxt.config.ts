@@ -4,13 +4,14 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineNuxtConfig({
 	compatibilityDate: '2024-11-01',
 	devtools: { enabled: true },
-	modules: ['@nuxt/eslint', '@nuxtjs/tailwindcss', '@pinia/nuxt', '@vite-pwa/nuxt'],
+	modules: ['@nuxt/eslint', '@nuxtjs/tailwindcss', '@pinia/nuxt', '@vite-pwa/nuxt', '@nuxt/icon'],
 	build: {
 		transpile: [],
 	},
 	typescript: {
 		typeCheck: true,
 	},
+	css: ['~/assets/css/main.css'],
 	vite: {
 		vue: {
 			template: {},

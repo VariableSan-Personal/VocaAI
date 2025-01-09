@@ -1,9 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: [],
-	prefix: 'tw-',
+	prefix: '',
 	theme: {
 		extend: {},
 	},
-	plugins: [],
+	plugins: [require('daisyui')],
+	daisyui: {
+		themes: ['light', 'dark'],
+	},
+	darkMode: ['selector', '[data-theme="dark"]'],
 }
