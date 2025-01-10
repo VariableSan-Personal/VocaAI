@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import type { ConfigField } from '~/shared/ai'
+	import type { ConfigField } from '~/shared'
 
 	defineProps<{
 		field: ConfigField

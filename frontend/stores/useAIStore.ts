@@ -1,7 +1,4 @@
-import { LocalStorageKeys } from '@/shared'
-import { AIServiceType } from '@/shared/ai/lib/constants'
-import type { AIServiceConfig } from '@/shared/ai/lib/types'
-import { AIServiceFactory } from '@/shared/ai/services/factory'
+import { AIServiceFactory, AIServiceType, LocalStorageKeys, type AIServiceConfig } from '@/shared'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
