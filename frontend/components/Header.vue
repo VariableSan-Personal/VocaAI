@@ -1,6 +1,10 @@
 <template>
-	<nav v-if="$route.meta.showBack" class="navbar bg-base-100">
-		<button class="btn btn-ghost p-2 hover:bg-inherit" @click="$router.back()">
+	<nav class="navbar bg-base-100">
+		<button
+			v-if="$route.meta.showBack"
+			class="btn btn-ghost p-2 hover:bg-inherit"
+			@click="$router.back()"
+		>
 			<Icon size="24" name="uil:angle-left-b" />
 		</button>
 

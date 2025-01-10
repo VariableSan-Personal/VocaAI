@@ -1,81 +1,40 @@
+<script setup>
+	definePageMeta({
+		title: 'Menu',
+	})
+
+	const menuItems = [
+		{ icon: 'uil:glass-martini', text: 'Full version is active', iconClass: 'text-amber' },
+		{ icon: 'uil:cog', text: 'Settings', route: 'menu-settings' },
+		{ icon: 'uil:web-grid', text: 'Other languages and apps' },
+		{ icon: 'uil:star', text: 'Rate' },
+		{ icon: 'uil:share-alt', text: 'Share' },
+		{ type: 'separator' },
+		{ icon: 'uil:save', text: 'Create backup' },
+		{ icon: 'uil:database-alt', text: 'Restore data' },
+		{ icon: 'uil:sync', text: 'Reset all progress' },
+		{ type: 'separator' },
+		{ icon: 'uil:question-circle', text: 'Support' },
+		{ icon: 'uil:info-circle', text: 'About' },
+	]
+</script>
+
 <template>
-	<v-container>
-		<h1 class="text-h4 mb-4">Menu</h1>
-
-		<v-list>
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="amber" class="mr-2" icon="mdi-crown"></v-icon>
-					Full version is active
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-list-item :to="{ name: 'menu-settings' }">
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-cog"></v-icon>
-					Settings
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-web"></v-icon>
-					Other languages and apps
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-star"></v-icon>
-					Rate
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-share-variant"></v-icon>
-					Share
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-divider class="my-2"></v-divider>
-
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-backup-restore"></v-icon>
-					Create backup
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-database-import"></v-icon>
-					Restore data
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-refresh"></v-icon>
-					Reset all progress
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-divider class="my-2"></v-divider>
-
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-help-circle"></v-icon>
-					Support
-				</v-list-item-title>
-			</v-list-item>
-
-			<v-list-item>
-				<v-list-item-title class="d-flex align-center">
-					<v-icon color="primary" class="mr-2" icon="mdi-information"></v-icon>
-					About
-				</v-list-item-title>
-			</v-list-item>
-		</v-list>
-	</v-container>
+	<div class="container">
+		<ul class="menu m-0 p-0">
+			<template v-for="(item, index) in menuItems" :key="index">
+				<hr v-if="item.type === 'separator'" class="my-2" />
+				<li v-else>
+					<NuxtLink v-if="item.route" :to="{ name: item.route }" class="flex items-center px-2">
+						<Icon :name="item.icon" :class="['mr-2', item.iconClass || 'text-primary']" />
+						{{ item.text }}
+					</NuxtLink>
+					<div v-else class="flex items-center px-2">
+						<Icon :name="item.icon" :class="['mr-2', item.iconClass || 'text-primary']" />
+						{{ item.text }}
+					</div>
+				</li>
+			</template>
+		</ul>
+	</div>
 </template>

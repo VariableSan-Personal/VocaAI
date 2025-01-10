@@ -15,9 +15,9 @@
 
 <template>
 	<div class="flex min-h-screen w-full flex-col">
-		<Header />
+		<Header class="mb-2" />
 
-		<main class="container mx-auto flex-1 p-4">
+		<main class="mb-6 flex-1">
 			<slot></slot>
 		</main>
 

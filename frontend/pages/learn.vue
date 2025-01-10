@@ -32,7 +32,7 @@
 </script>
 
 <template>
-	<div class="container mx-auto space-y-4">
+	<div class="container space-y-4">
 		<button class="btn btn-warning" @click="generateSomething">Generate something</button>
 
 		<input

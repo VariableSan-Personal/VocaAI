@@ -19,7 +19,7 @@
 </script>
 
 <template>
-	<div v-if="!$route.meta.hideBottomNav" class="btm-nav">
+	<div v-if="!$route.meta.hideBottomNav" class="btm-nav relative">
 		<NuxtLink
 			v-for="route in routes"
 			:key="route.title"

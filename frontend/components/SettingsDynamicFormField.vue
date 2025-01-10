@@ -9,32 +9,40 @@
 </script>
 
 <template>
-	<div class="field-wrapper">
-		<v-select
+	<div class="form-control">
+		<select
 			v-if="field.type === 'select'"
 			v-model="modelValue"
-			:label="field.label"
-			:items="field.options"
+			class="select select-bordered"
 			:required="field.required"
-			item-title="label"
-			item-value="value"
-		/>
+		>
+			<option disabled selected>
+				{{ field.label }}
+			</option>
+			<option v-for="opt in field.options" :key="opt.value" :value="opt.value">
+				{{ opt.label }}
+			</option>
+		</select>
 
-		<v-number-input
+		<input
 			v-else-if="field.type === 'number'"
-			v-model="(modelValue as number)!"
-			:label="field.label"
+			v-model="modelValue"
+			:placeholder="field.label"
 			type="number"
 			:required="field.required"
 			:min="field.min"
 			:max="field.max"
-			:step="0.1"
-			:reverse="false"
-			control-variant="default"
-			:hide-input="false"
-			:inset="false"
+			step="0.1"
+			class="input input-bordered"
 		/>
 
-		<v-text-field v-else v-model="modelValue" :label="field.label" :required="field.required" />
+		<input
+			v-else
+			v-model="modelValue"
+			:placeholder="field.label"
+			type="text"
+			class="input input-bordered"
+			:required="field.required"
+		/>
 	</div>
 </template>
