@@ -19,7 +19,7 @@
 </script>
 
 <template>
-	<div v-if="!$route.meta.hideBottomNav" class="btm-nav relative">
+	<div v-if="!$route.meta.hideBottomNav" class="btm-nav">
 		<NuxtLink
 			v-for="route in routes"
 			:key="route.title"
@@ -31,4 +31,5 @@
 			<p>{{ route.title }}</p>
 		</NuxtLink>
 	</div>
+	<div class="h-16"></div>
 </template>

@@ -17,7 +17,7 @@
 	<div class="flex min-h-screen w-full flex-col">
 		<Header class="mb-2" />
 
-		<main class="mb-6 flex-1">
+		<main class="mb-2 flex-1">
 			<slot></slot>
 		</main>
 
