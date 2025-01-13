@@ -2,7 +2,7 @@
 	import { AIServiceType, type AIServiceConfig, type ConfigField } from '@/shared'
 	import { useAIStore, useGlobalStore } from '@/stores'
 
-	import CardSettings from '~/components/settings/CardSettings.vue'
+	import CardSettings from '~/components/settings/Card.vue'
 	import SettingsDynamicFormField from '~/components/settings/SettingsDynamicFormField.vue'
 
 	const aiStore = useAIStore()

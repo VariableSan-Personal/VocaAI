@@ -1,34 +1,28 @@
 <script setup lang="ts">
-	import { ref } from 'vue'
+	definePageMeta({
+		title: 'Vocabulary',
+	})
 
 	const generalList = ref(true)
 	const oxfordList = ref(true)
 
 	const categories = [
-		{ title: 'Idioms', words: 2, icon: 'uil:water', iconColor: 'amber' },
-		{ title: 'IELTS', words: 17, icon: 'uil:leaf', iconColor: 'orange', progress: 6 },
-		{ title: 'Linking words', words: 46, icon: 'uil:ruler', iconColor: 'orange', progress: 87 },
-		{ title: 'Smart Book', words: 228, icon: 'uil:notebook', iconColor: 'blue', progress: 78 },
-		{ title: 'Свои слова', words: 79, icon: 'uil:camera', iconColor: 'grey', progress: 5 },
-		{ title: 'Анатомия', words: 120, icon: 'uil:bone', iconColor: 'amber', progress: 2 },
-		{ title: 'Археология', words: 74, icon: 'uil:flower-tulip', iconColor: 'red' },
+		{ title: 'Idioms', words: 2, icon: 'uil:water' },
+		{ title: 'Linking words', words: 46, icon: 'uil:ruler', progress: 87 },
+		{ title: 'Свои слова', words: 79, icon: 'uil:camera', progress: 5 },
 	]
 </script>
 
 <template>
 	<div class="container">
 		<div class="card m-2 shadow-lg">
-			<div class="card-body flex justify-between">
-				<h2 class="card-title">Vocabulary</h2>
-				<button class="btn btn-link text-primary">IMPORT</button>
-			</div>
+			<teleport to="#headerContent">
+				<button class="btn btn-link px-0 uppercase text-primary">Import</button>
+			</teleport>
 
-			<div class="form-control px-4">
-				<label class="input-group">
-					<Icon name="uil:search" />
-					<input type="text" placeholder="Search for words..." class="input input-bordered" />
-				</label>
-			</div>
+			<form class="form-control px-4">
+				<TextField icon-name="uil:search" placeholder="Search for words..." />
+			</form>
 
 			<ul class="menu">
 				<li>
@@ -37,13 +31,18 @@
 						Add category
 					</button>
 				</li>
-				<li v-for="(item, index) in categories" :key="index" class="flex justify-between">
-					<div class="flex items-center space-x-2">
-						<Icon :name="item.icon" :class="['text-' + item.iconColor]" />
-						<span>{{ item.title }}</span>
-						<span>{{ item.words }} words</span>
+
+				<li v-for="(item, index) in categories" :key="index">
+					<div class="grid gap-4">
+						<Icon :name="item.icon" class="col-span-1" />
+						<div class="col-span-9 flex flex-col">
+							<span>{{ item.title }}</span>
+							<span>{{ item.words }} words</span>
+						</div>
+						<span v-if="item.progress" class="col-span-2 flex justify-end text-gray-500">
+							{{ item.progress }}%
+						</span>
 					</div>
-					<span v-if="item.progress" class="text-gray-500">{{ item.progress }}%</span>
 				</li>
 			</ul>
 

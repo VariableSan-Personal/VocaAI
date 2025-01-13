@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-	import CardSettings from '~/components/settings/CardSettings.vue'
+	import CardSettings from '~/components/settings/Card.vue'
 </script>
 
 <template>

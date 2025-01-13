@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-	import AIServiceSettings from '@/components/settings/AIServiceSettings.vue'
-	import AppearanceSettings from '@/components/settings/AppearanceSettings.vue'
-	import GeneralSettings from '@/components/settings/GeneralSettings.vue'
-	import NotificationSettings from '@/components/settings/NotificationSettings.vue'
-	import PronunciationSettings from '@/components/settings/PronunciationSettings.vue'
-
 	definePageMeta({
 		showBack: true,
 		title: 'Settings',
@@ -15,15 +9,15 @@
 <template>
 	<div class="container">
 		<div class="space-y-6">
-			<AIServiceSettings />
+			<SettingsAIService />
 
-			<AppearanceSettings />
+			<SettingsAppearance />
 
-			<GeneralSettings />
+			<SettingsGeneral />
 
-			<NotificationSettings />
+			<SettingsNotification />
 
-			<PronunciationSettings />
+			<SettingsPronunciation />
 		</div>
 	</div>
 </template>

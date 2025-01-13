@@ -1,7 +1,7 @@
 <script setup lang="ts">
 	const spacedRepetitionList = [
 		{
-			icon: 'uil:pencil',
+			icon: 'uil:pen',
 			title: '1 category chosen',
 		},
 		{
@@ -10,7 +10,7 @@
 			subtitle: 'Learned today: 0 of 10',
 		},
 		{
-			icon: 'uil:timelapse',
+			icon: 'uil:clock',
 			title: 'Review words',
 			subtitle: 'Words to review: 178',
 		},
@@ -44,9 +44,9 @@
 
 		<section>
 			<h6 class="mb-1 text-xl font-semibold text-secondary">Spaced repetition</h6>
-			<ul class="menu w-full rounded-box gap-4">
+			<ul class="menu w-full rounded-box gap-2">
 				<li v-for="(item, idx) in spacedRepetitionList" :key="idx">
-					<button class="btn btn-ghost btn-sm gap-2">
+					<button class="btn btn-ghost btn-sm gap-2 h-full py-3">
 						<Icon :name="item.icon" class="h-5 w-5" />
 						<div>
 							{{ item.title }}
