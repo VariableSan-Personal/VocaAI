@@ -62,16 +62,12 @@
 			</ul>
 		</div>
 
-		<button class="btn btn-primary fixed bottom-20 right-1/2 translate-x-1/2 rounded-lg">
+		<button
+			class="btn btn-primary fixed bottom-20 right-1/2 !translate-x-1/2"
+			@click="$router.push({ name: 'vocabulary-add-word' })"
+		>
 			<Icon name="uil:plus" class="mr-1" />
 			Word
 		</button>
 	</div>
 </template>
-
-<style scoped>
-	.floating-button {
-		right: calc(50% - 104px / 2);
-		bottom: 80px;
-	}
-</style>

@@ -20,33 +20,16 @@
 			subtitle: 'Both new words and words for review will appear',
 		},
 	]
-
-	const { getCurrentService } = useAIStore()
-
-	const prompt = ref('')
-
-	const generateSomething = async () => {
-		const res = await getCurrentService()?.generateSuggestion(prompt.value)
-		console.info(res)
-	}
 </script>
 
 <template>
 	<div class="container space-y-4">
-		<button class="btn btn-warning" @click="generateSomething">Generate something</button>
-
-		<input
-			v-model="prompt"
-			class="input input-bordered w-full max-w-sm"
-			name="prompt"
-			placeholder="Prompt"
-		/>
-
 		<section>
 			<h6 class="mb-1 text-xl font-semibold text-secondary">Spaced repetition</h6>
-			<ul class="menu w-full rounded-box gap-2">
+
+			<ul class="menu w-full gap-2 rounded-box">
 				<li v-for="(item, idx) in spacedRepetitionList" :key="idx">
-					<button class="btn btn-ghost btn-sm gap-2 h-full py-3">
+					<button class="btn btn-ghost btn-sm h-full gap-2 py-3">
 						<Icon :name="item.icon" class="h-5 w-5" />
 						<div>
 							{{ item.title }}
