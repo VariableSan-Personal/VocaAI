@@ -37,7 +37,7 @@ export class GeminiService extends AbstractAIService {
 
 	async generateSuggestion(word: string): Promise<string> {
 		const config = useRuntimeConfig()
-		const PROMPT = `Generate a comprehensive and complex sentence in English using the word "${word}". The response should be in the format: "${this.ORIGINAL} sentence|${this.TRANSLATED} sentence".`
+		const PROMPT = `Generate a comprehensive and complex sentence in ${this.ORIGINAL} using the word "${word}". The response should be in the format: "${this.ORIGINAL} sentence|${this.TRANSLATED} sentence". Also, it should be in markdown format and make the main word bold.`
 
 		const body: Partial<GeminiRequestBody> = {
 			contents: [
