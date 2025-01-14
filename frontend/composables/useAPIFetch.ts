@@ -8,7 +8,6 @@ export function useAPIFetch<T>(url: string, options?: FetchOptions): Promise<T> 
 	const customFetch = ofetch.create({ baseURL: config.public.baseUrl })
 
 	return customFetch(url, {
-		baseURL: config.public.baseUrl as string,
 		onRequest({ options }) {
 			const token = localStorage.getItem(LocalStorageKeys.Token)
 			if (token) {

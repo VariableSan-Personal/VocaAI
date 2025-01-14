@@ -1,7 +1,7 @@
 export interface Notification {
 	show: boolean
 	message: string
-	color: string
+	color: 'success' | 'info' | 'warning' | 'error'
 	timeout: number
 }
 

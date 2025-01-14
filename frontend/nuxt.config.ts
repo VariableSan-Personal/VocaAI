@@ -27,6 +27,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			baseUrl: 'http://localhost:4000/api/v1',
+			geminiUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
 		},
 	},
 	alias: {

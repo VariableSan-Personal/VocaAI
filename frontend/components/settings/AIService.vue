@@ -21,7 +21,7 @@
 			try {
 				aiStore.initService(selectedService.value, aiConfig.value)
 			} catch (error) {
-				showNotification(error as string, { color: 'red' })
+				showNotification(error as string, { color: 'error' })
 			}
 		}
 	}

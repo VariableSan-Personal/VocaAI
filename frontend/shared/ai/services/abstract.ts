@@ -10,7 +10,7 @@ export abstract class AbstractAIService {
 		this.config = config
 	}
 
-	abstract generateSuggestion(prompt: string): Promise<string>
+	abstract generateSuggestion(word: string): Promise<string>
 	abstract getName(): string
 	abstract getConfigFields(): ConfigField[]
 
@@ -31,6 +31,14 @@ export abstract class AbstractAIService {
 					throw new Error(`${field.label} must be at most ${field.max}`)
 				}
 			}
+		}
+	}
+
+	formatGeneratedSuggestion(text: string): { original: string; translated: string } {
+		const [original, translated] = text.split('|')
+		return {
+			original,
+			translated,
 		}
 	}
 }

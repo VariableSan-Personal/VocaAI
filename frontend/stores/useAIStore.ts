@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useAIStore = defineStore('ai', () => {
-	const currentServiceType = ref<AIServiceType>(AIServiceType.ChatGPT)
+	const currentServiceType = ref<AIServiceType>(AIServiceType.Gemini)
 	const factory = AIServiceFactory.getInstance()
 	const config = ref<AIServiceConfig | null>(null)
 

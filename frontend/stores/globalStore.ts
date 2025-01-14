@@ -34,10 +34,27 @@ export const useGlobalStore = defineStore('global', () => {
 		}
 	}
 
+	const showError = (message: string) => {
+		showNotification(message, { color: 'error' })
+	}
+	const showSuccess = (message: string) => {
+		showNotification(message, { color: 'success' })
+	}
+	const showWarning = (message: string) => {
+		showNotification(message, { color: 'warning' })
+	}
+	const showInfo = (message: string) => {
+		showNotification(message, { color: 'info' })
+	}
+
 	return {
 		notification,
 		isDark,
 		showNotification,
 		toggleDark,
+		showError,
+		showSuccess,
+		showWarning,
+		showInfo,
 	}
 })

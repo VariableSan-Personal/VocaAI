@@ -1,7 +1,5 @@
 import { AIServiceType, type AIServiceConfig, type ConfigField } from '../lib'
 import type { AbstractAIService } from './abstract'
-import { ChatGPTService } from './chatgpt'
-import { ClaudeService } from './claude'
 import { GeminiService } from './gemini'
 
 export class AIServiceFactory {
@@ -19,12 +17,6 @@ export class AIServiceFactory {
 
 	createService(type: AIServiceType, config: AIServiceConfig): AbstractAIService {
 		switch (type) {
-			case AIServiceType.ChatGPT:
-				this.currentService = new ChatGPTService(config)
-				break
-			case AIServiceType.Claude:
-				this.currentService = new ClaudeService(config)
-				break
 			case AIServiceType.Gemini:
 				this.currentService = new GeminiService(config)
 				break
@@ -34,10 +26,6 @@ export class AIServiceFactory {
 
 	getServiceConfigFields(type: AIServiceType): ConfigField[] {
 		switch (type) {
-			case AIServiceType.ChatGPT:
-				return new ChatGPTService({}, false).getConfigFields()
-			case AIServiceType.Claude:
-				return new ClaudeService({}, false).getConfigFields()
 			case AIServiceType.Gemini:
 				return new GeminiService({}, false).getConfigFields()
 		}
