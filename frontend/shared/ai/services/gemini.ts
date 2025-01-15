@@ -9,9 +9,8 @@ import {
 import { AbstractAIService } from './abstract'
 
 export class GeminiService extends AbstractAIService {
-	private VALUES_RANGE = 2.0
-	private ORIGINAL = 'English'
-	private TRANSLATED = 'Russian'
+	private TEMPERATURE_RANGE = 2.0
+	private TOP_P_RANGE = 1.0
 
 	getName(): string {
 		return SERVICE_NAMES[AIServiceType.Gemini]
@@ -35,18 +34,19 @@ export class GeminiService extends AbstractAIService {
 		]
 	}
 
-	async generateSuggestion(word: string): Promise<string> {
+	async generateSuggestion(word: string, examples?: string[]): Promise<string> {
 		const config = useRuntimeConfig()
-		const PROMPT = `Generate a comprehensive and complex sentence in ${this.ORIGINAL} using the word "${word}". The response should be in the format: "${this.ORIGINAL} sentence|${this.TRANSLATED} sentence". Also, it should be in markdown format and make the main word bold.`
+		const prompt = this.generatePrompt(word, examples)
 
 		const body: Partial<GeminiRequestBody> = {
 			contents: [
 				{
-					parts: [{ text: PROMPT }],
+					parts: [{ text: prompt }],
 				},
 			],
 			generationConfig: {
-				temperature: Math.random() * this.VALUES_RANGE,
+				temperature: parseFloat((Math.random() * this.TEMPERATURE_RANGE).toFixed(5)),
+				topP: parseFloat((Math.random() * this.TOP_P_RANGE).toFixed(5)),
 			},
 		}
 
@@ -69,5 +69,21 @@ export class GeminiService extends AbstractAIService {
 
 	extractText(data: GeminiResponse) {
 		return data.candidates?.[0]?.content?.parts?.[0]?.text
+	}
+
+	private generatePrompt(word: string, examples?: string[]): string {
+		const PROMPT = `
+      Find a unique and complex sentence in ${this.SOURCE_LANGUAGE} using the word "${word}" from real books.
+      Focus on using advanced grammatical structures, such as conditional phrases, participial constructions, or passive voice and so on. The response should be in the format: "${this.SOURCE_LANGUAGE} sentence|${this.TARGET_LANGUAGE} sentence", since i need to parse this text lately, so it's important text to be "sentence 1|sentence 2". Also, it should be in markdown format and make the main word **bold**. Don't use tables, but a simple text format.
+    `
+
+		const EXAMPLE_AVOIDANCES = examples?.length
+			? `
+        Avoid structures similar to:
+        ${examples.map((example, index) => `${index + 1}. ${example}`).join('\n')}
+      `
+			: ''
+
+		return `${PROMPT}${EXAMPLE_AVOIDANCES}`
 	}
 }

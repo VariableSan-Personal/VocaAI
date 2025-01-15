@@ -2,6 +2,8 @@ import type { AIServiceConfig, ConfigField } from '../lib'
 
 export abstract class AbstractAIService {
 	protected config: AIServiceConfig
+	protected SOURCE_LANGUAGE = 'English'
+	protected TARGET_LANGUAGE = 'Russian'
 
 	constructor(config: AIServiceConfig, instantValidation = true) {
 		if (instantValidation) {
@@ -10,7 +12,7 @@ export abstract class AbstractAIService {
 		this.config = config
 	}
 
-	abstract generateSuggestion(word: string): Promise<string>
+	abstract generateSuggestion(word: string, examples?: string[]): Promise<string>
 	abstract getName(): string
 	abstract getConfigFields(): ConfigField[]
 

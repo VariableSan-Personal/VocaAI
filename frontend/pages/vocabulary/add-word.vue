@@ -53,7 +53,10 @@
 		}
 
 		try {
-			const res = await currentService?.generateSuggestion(form.word)
+			const res = await currentService?.generateSuggestion(
+				form.word,
+				form.examples.map((e) => e.text)
+			)
 			const { original, translated } = currentService.formatGeneratedSuggestion(res)
 			const example = form.examples[index]
 
@@ -144,6 +147,7 @@
 
 						<div class="space-y-4">
 							<div class="form-control">
+								<!-- TODO: if possible replace textarea with lightweight text editor -->
 								<textarea
 									v-model="example.text"
 									type="text"
