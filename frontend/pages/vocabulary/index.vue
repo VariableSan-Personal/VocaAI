@@ -7,9 +7,15 @@
 	const oxfordList = ref(true)
 
 	const categories = [
-		{ title: 'Idioms', words: 2, icon: 'uil:water' },
-		{ title: 'Linking words', words: 46, icon: 'uil:ruler', progress: 87 },
-		{ title: 'Свои слова', words: 79, icon: 'uil:camera', progress: 5 },
+		{
+			title: 'Add category',
+			icon: 'uil:plus',
+			disabled: false,
+			onClick: () => {},
+		},
+		{ title: 'Idioms', words: 2, icon: 'uil:water', disabled: true },
+		{ title: 'Linking words', words: 46, icon: 'uil:ruler', disabled: true, progress: 87 },
+		{ title: 'Свои слова', words: 79, icon: 'uil:camera', disabled: true, progress: 5 },
 	]
 </script>
 
@@ -17,7 +23,9 @@
 	<div class="container">
 		<div class="card m-2 shadow-lg">
 			<teleport to="#headerContent">
-				<button class="btn btn-link px-0 uppercase text-primary">Import</button>
+				<button class="btn btn-link text-primary px-0 uppercase disabled:bg-transparent" disabled>
+					Import
+				</button>
 			</teleport>
 
 			<form class="form-control px-4">
@@ -25,19 +33,17 @@
 			</form>
 
 			<ul class="menu">
-				<li>
-					<button class="btn btn-ghost flex justify-start">
-						<Icon name="uil:plus" class="mr-2" />
-						Add category
-					</button>
-				</li>
-
-				<li v-for="(item, index) in categories" :key="index">
+				<li
+					v-for="(item, index) in categories"
+					:key="index"
+					:class="{ disabled: item.disabled }"
+					@click="item.onClick"
+				>
 					<div class="grid gap-4">
 						<Icon :name="item.icon" class="col-span-1" />
 						<div class="col-span-9 flex flex-col">
 							<span>{{ item.title }}</span>
-							<span>{{ item.words }} words</span>
+							<span v-if="item.words">{{ item.words }} words</span>
 						</div>
 						<span v-if="item.progress" class="col-span-2 flex justify-end text-gray-500">
 							{{ item.progress }}%

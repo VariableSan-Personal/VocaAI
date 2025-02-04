@@ -29,7 +29,7 @@
 
 			<ul class="menu w-full gap-2 rounded-box">
 				<li v-for="(item, idx) in spacedRepetitionList" :key="idx">
-					<button class="btn btn-ghost btn-sm h-full gap-2 py-3">
+					<button class="btn btn-ghost btn-sm h-full gap-2 py-3" disabled>
 						<Icon :name="item.icon" class="h-5 w-5" />
 						<div>
 							{{ item.title }}
