@@ -1,5 +1,5 @@
 export enum AIServiceType {
-	Gemini = 'gemini',
+	Gemini = 'Gemini',
 }
 
 export const SERVICE_NAMES = {

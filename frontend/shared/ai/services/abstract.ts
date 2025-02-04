@@ -17,6 +17,8 @@ export abstract class AbstractAIService {
 	abstract getConfigFields(): ConfigField[]
 
 	validateConfig(config: AIServiceConfig): void {
+		// TODO: Add Zod schema validation for the config object
+
 		const configFields = this.getConfigFields()
 
 		for (const field of configFields) {

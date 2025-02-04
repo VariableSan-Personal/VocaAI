@@ -3,10 +3,11 @@
 	import { useAIStore, useGlobalStore } from '@/stores'
 
 	import CardSettings from '~/components/settings/Card.vue'
+	import SelectionDialog from '~/components/settings/SelectionDialog.vue'
 	import SettingsDynamicFormField from '~/components/settings/SettingsDynamicFormField.vue'
 
 	const aiStore = useAIStore()
-	const { showNotification } = useGlobalStore()
+	const { showError, showSuccess } = useGlobalStore()
 
 	const items = Object.values(AIServiceType)
 
@@ -20,8 +21,9 @@
 		if (selectedService.value && aiConfig.value) {
 			try {
 				aiStore.initService(selectedService.value, aiConfig.value)
+				showSuccess('AI service settings updated')
 			} catch (error) {
-				showNotification(error as string, { color: 'error' })
+				showError(error as string)
 			}
 		}
 	}
@@ -36,26 +38,14 @@
 	<CardSettings>
 		<template #title>AI Service Settings</template>
 
-		<div class="form-control mb-4 w-full">
-			<label class="label">
-				<span class="label-text">Select AI Service</span>
-			</label>
-			<select
-				v-model="selectedService"
-				class="select select-bordered w-full"
-				@change="onServiceChange(($event.target as HTMLInputElement).value as AIServiceType)"
-			>
-				<option value="" disabled selected>Choose an AI service</option>
-				<option v-for="service in items" :key="service" :value="service">
-					{{ service }}
-				</option>
-			</select>
-		</div>
+		<SelectionDialog
+			v-model="selectedService"
+			title="AI Service"
+			:list="items"
+			@update:model-value="onServiceChange($event as AIServiceType)"
+		/>
 
 		<div v-if="configFields?.length" class="space-y-4">
-			<label class="label">
-				<span class="label-text">AI Config Fields</span>
-			</label>
 			<div v-for="(item, index) in configFields" :key="index" class="form-control">
 				<SettingsDynamicFormField v-model="aiConfig[item.name]" :field="item" class="w-full" />
 			</div>

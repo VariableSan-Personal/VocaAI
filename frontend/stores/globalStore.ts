@@ -15,6 +15,7 @@ export const useGlobalStore = defineStore('global', () => {
 		attribute: 'data-theme',
 		valueDark: 'dark',
 		valueLight: 'light',
+		initialValue: 'auto',
 	})
 
 	const toggleDark = useToggle(isDark)

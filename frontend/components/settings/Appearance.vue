@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 	import CardSettings from '~/components/settings/Card.vue'
+	import SelectionDialog from '~/components/settings/SelectionDialog.vue'
+
+	const globalStore = useGlobalStore()
+	const { isDark, toggleDark } = toRefs(globalStore)
 </script>
 
 <template>
@@ -7,24 +11,19 @@
 		<template #title>Appearance</template>
 
 		<div class="space-y-4">
-			<div class="flex items-center justify-between">
-				<div>
-					<p class="font-medium">Theme</p>
-					<p class="text-sm text-primary">Match system theme</p>
-				</div>
-			</div>
+			<SelectionDialog
+				title="Theme"
+				:model-value="isDark ? 'Dark' : 'Light'"
+				:list="['Light', 'Dark']"
+				@update:model-value="(theme) => toggleDark(theme === 'Dark')"
+			/>
 
 			<div class="flex items-center justify-between">
 				<p class="font-medium">Turn on animation</p>
-				<input type="checkbox" class="toggle" />
+				<input type="checkbox" class="toggle" disabled />
 			</div>
 
-			<div class="flex items-center justify-between">
-				<div>
-					<p class="font-medium">UI language</p>
-					<p class="text-sm text-primary">Match system language</p>
-				</div>
-			</div>
+			<SelectionDialog title="UI language" :list="['Match system language']" disabled />
 		</div>
 	</CardSettings>
 </template>
