@@ -3,8 +3,11 @@
 
 	const aiStore = useAIStore()
 	const { showNotification } = useGlobalStore()
+	const { init } = useCardStore()
 
 	onMounted(() => {
+		init()
+
 		try {
 			aiStore.restoreService()
 		} catch (error) {

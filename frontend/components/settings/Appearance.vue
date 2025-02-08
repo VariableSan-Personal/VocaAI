@@ -15,7 +15,7 @@
 				title="Theme"
 				:model-value="isDark ? 'Dark' : 'Light'"
 				:list="['Light', 'Dark']"
-				@update:model-value="(theme) => toggleDark(theme === 'Dark')"
+				@update:model-value="(theme: string) => toggleDark(theme === 'Dark')"
 			/>
 
 			<div class="flex items-center justify-between">
