@@ -56,6 +56,10 @@
 		errors.value = {}
 	}
 
+	const clearDatabase = () => {
+		cardStore.clearDatabase()
+	}
+
 	onMounted(() => {
 		const interval = setInterval(forceRerender, 30000)
 
@@ -68,7 +72,9 @@
 <template>
 	<div class="container">
 		<section class="space-y-4">
-			<form @submit.prevent="handleAddCard" @keypress.enter="handleAddCard">
+			<Button variant="error" @click="clearDatabase">Clear Database</Button>
+
+			<form @submit.prevent="handleAddCard">
 				<div class="mb-4 space-y-4">
 					<TextField v-model="form.front" :error="errors.front" placeholder="Front side" />
 					<TextField v-model="form.back" :error="errors.back" placeholder="Back side" />

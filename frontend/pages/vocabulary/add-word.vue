@@ -92,7 +92,7 @@
 <template>
 	<div class="container">
 		<section>
-			<form class="space-y-6" @submit.prevent="handleSubmit" @keypress.enter="handleSubmit">
+			<form class="space-y-6" @submit.prevent="handleSubmit">
 				<div class="card space-y-4 bg-base-100 p-6 shadow-xl">
 					<TextField v-model="form.word" type="text" placeholder="Word" :error="errors.word" />
 					<TextField

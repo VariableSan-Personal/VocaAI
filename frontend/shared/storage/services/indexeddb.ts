@@ -36,6 +36,12 @@ export class IndexedDBStorage implements StorageService {
 		await this.db?.delete(this.CARDS_STORE, id)
 	}
 
+	async clearDatabase(): Promise<void> {
+		const tx = this.db?.transaction(this.CARDS_STORE, 'readwrite')
+		await tx?.store.clear()
+		await tx?.done
+	}
+
 	async getDueCards(limit = 50): Promise<Card[]> {
 		const tx = this.db?.transaction(this.CARDS_STORE, 'readonly')
 		const index = tx?.store.index('due')

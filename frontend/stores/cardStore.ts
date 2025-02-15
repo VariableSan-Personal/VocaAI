@@ -60,6 +60,15 @@ export const useCardStore = defineStore('cards', () => {
 		Object.assign(card, updatedCard)
 	}
 
+	async function clearDatabase() {
+		try {
+			await storage.clearDatabase()
+			cards.value = []
+		} catch (e) {
+			console.error(e)
+		}
+	}
+
 	return {
 		cards,
 		loading,
@@ -67,5 +76,6 @@ export const useCardStore = defineStore('cards', () => {
 		addCard,
 		reviewCard,
 		loadCards,
+		clearDatabase,
 	}
 })
