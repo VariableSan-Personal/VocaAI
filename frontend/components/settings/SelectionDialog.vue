@@ -33,28 +33,30 @@
 </script>
 
 <template>
-	<button
-		class="btn btn-ghost no-animation group flex-col items-start justify-start px-0 hover:bg-transparent disabled:bg-transparent"
+	<Button
+		variant="ghost"
+		class="group no-animation flex-col items-start justify-start px-0 disabled:bg-transparent"
 		:disabled="disabled"
+		no-hover
 		@click="dialog?.showModal()"
 	>
 		<span class="font-medium">{{ title }}</span>
-		<span class="text-primary text-sm group-disabled:opacity-20">
+		<span class="text-sm text-primary group-disabled:opacity-20">
 			{{ modelValue ? modelValue : 'Not selected' }}
 		</span>
-	</button>
+	</Button>
 
 	<dialog ref="dialog" class="modal modal-bottom sm:modal-middle">
 		<div class="modal-box pt-2">
 			<form method="dialog" class="flex justify-end">
-				<button class="btn btn-ghost px-0 hover:bg-transparent">
+				<Button variant="ghost" class="px-0" no-hover>
 					<Icon name="uil:x" size="24" />
-				</button>
+				</Button>
 			</form>
 
 			<slot></slot>
 
-			<ul v-if="list?.length" class="menu rounded-box w-full gap-2">
+			<ul v-if="list?.length" class="menu w-full gap-2 rounded-box">
 				<slot
 					v-for="(item, index) in list"
 					:key="index"

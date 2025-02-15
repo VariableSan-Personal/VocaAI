@@ -23,9 +23,9 @@
 	<div class="container">
 		<div class="card m-2 shadow-lg">
 			<teleport to="#headerContent">
-				<button class="btn btn-link text-primary px-0 uppercase disabled:bg-transparent" disabled>
+				<Button variant="link" class="px-0 uppercase text-primary disabled:bg-transparent" disabled>
 					Import
-				</button>
+				</Button>
 			</teleport>
 
 			<form class="form-control px-4">
@@ -68,12 +68,13 @@
 			</ul>
 		</div>
 
-		<button
-			class="btn btn-primary fixed bottom-20 right-1/2 !translate-x-1/2"
+		<Button
+			variant="primary"
+			class="fixed bottom-20 right-1/2 !translate-x-1/2"
 			@click="$router.push({ name: 'vocabulary-add-word' })"
 		>
 			<Icon name="uil:plus" class="mr-1" />
 			Word
-		</button>
+		</Button>
 	</div>
 </template>

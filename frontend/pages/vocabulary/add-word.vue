@@ -92,46 +92,26 @@
 <template>
 	<div class="container">
 		<section>
-			<form class="space-y-6" @submit.prevent="handleSubmit">
-				<div class="card bg-base-100 p-6 shadow-xl">
-					<div class="form-control">
-						<input
-							v-model="form.word"
-							type="text"
-							placeholder="Word"
-							class="input input-bordered w-full"
-						/>
-						<span v-if="errors.word" class="mt-1 text-sm text-error">
-							{{ errors.word }}
-						</span>
-					</div>
-
-					<div class="form-control mt-4">
-						<input
-							v-model="form.transcription"
-							type="text"
-							placeholder="Transcription (optional)"
-							class="input input-bordered w-full"
-						/>
-					</div>
-
-					<div class="form-control mt-4">
-						<input
-							v-model="form.translation"
-							type="text"
-							placeholder="Translation"
-							class="input input-bordered w-full"
-						/>
-						<span v-if="errors.translation" class="mt-1 text-sm text-error">
-							{{ errors.translation }}
-						</span>
-					</div>
+			<form class="space-y-6" @submit.prevent="handleSubmit" @keypress.enter="handleSubmit">
+				<div class="card space-y-4 bg-base-100 p-6 shadow-xl">
+					<TextField v-model="form.word" type="text" placeholder="Word" :error="errors.word" />
+					<TextField
+						v-model="form.transcription"
+						type="text"
+						placeholder="Transcription (optional)"
+					/>
+					<TextField
+						v-model="form.translation"
+						type="text"
+						placeholder="Translation"
+						:error="errors.translation"
+					/>
 				</div>
 
 				<div class="space-y-4">
-					<button type="button" class="btn btn-outline btn-primary w-full" @click="addExample">
+					<Button variant="primary" class="btn-outline w-full" @click="addExample">
 						New example
-					</button>
+					</Button>
 
 					<div
 						v-for="(example, index) in form.examples"
@@ -140,9 +120,9 @@
 					>
 						<div class="mb-4 flex items-center justify-between">
 							<span class="font-medium">Example {{ index + 1 }}</span>
-							<button type="button" class="btn btn-ghost btn-sm" @click="removeExample(index)">
+							<Button variant="ghost" class="btn-sm" @click="removeExample(index)">
 								<Icon name="uil-times" class="text-xl" />
-							</button>
+							</Button>
 						</div>
 
 						<div class="space-y-4">
@@ -167,18 +147,18 @@
 								/>
 							</div>
 
-							<button
-								type="button"
-								class="btn btn-ghost btn-link btn-sm w-full"
+							<Button
+								variant="link"
+								class="btn-ghost btn-sm w-full"
 								@click="generateExample(index)"
 							>
 								Generate using AI
-							</button>
+							</Button>
 						</div>
 					</div>
 				</div>
 
-				<button type="submit" class="btn btn-primary w-full">Add</button>
+				<Button type="submit" variant="primary" class="w-full">Add</Button>
 			</form>
 		</section>
 	</div>

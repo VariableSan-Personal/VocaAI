@@ -52,7 +52,7 @@
 		</div>
 
 		<div class="card-actions mt-6 justify-end">
-			<button class="btn btn-primary" @click="handleServiceChange">Apply</button>
+			<Button variant="primary" @click="handleServiceChange">Apply</Button>
 		</div>
 	</CardSettings>
 </template>

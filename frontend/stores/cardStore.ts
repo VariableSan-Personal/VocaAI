@@ -1,16 +1,15 @@
 import { defineStore } from 'pinia'
 import type { Grade } from 'ts-fsrs'
 import { createEmptyCard, FSRS, generatorParameters } from 'ts-fsrs'
-import type { Card } from '~/shared'
+import { FSRS_PARAMETERS, type Card } from '~/shared'
 import { IndexedDBStorage } from '~/shared/storage/services/indexeddb'
 
 export const useCardStore = defineStore('cards', () => {
 	const storage = new IndexedDBStorage()
-	const fsrs = new FSRS(generatorParameters(/* { enable_fuzz: true, enable_short_term: false } */))
+	const fsrs = new FSRS(generatorParameters(FSRS_PARAMETERS))
 
 	const cards = ref<Card[]>([])
 	const loading = ref(false)
-
 
 	async function init() {
 		loading.value = true

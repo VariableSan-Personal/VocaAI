@@ -1,32 +1,59 @@
 <script setup lang="ts">
 	import { Rating, type Grade } from 'ts-fsrs'
+	import { z } from 'zod'
 	import type { CustomPageMeta } from '~/shared'
+
+	type Schema = z.output<typeof schema>
 
 	definePageMeta({
 		showBack: true,
 		title: 'Learn new words',
+		hideBottomNav: true,
 	} satisfies CustomPageMeta)
 
 	const cardStore = useCardStore()
 
-	const front = ref('')
-	const back = ref('')
+	const schema = z.object({
+		front: z.string().min(1, 'Word is required'),
+		back: z.string().min(1, 'Word is required'),
+	})
+
+	const form = reactive<Schema>({
+		front: '',
+		back: '',
+	})
+
+	const errors = ref<Record<string, string>>({})
 	const dateNow = ref(Date.now())
 
 	const dueCards = computed(() => cardStore.cards.filter((c) => c.due.getTime() <= dateNow.value))
 
-	function forceRerender() {
+	const forceRerender = () => {
 		dateNow.value = Date.now()
 	}
 
-	async function handleAddCard() {
-		await cardStore.addCard(front.value, back.value)
-		front.value = ''
-		back.value = ''
+	const handleAddCard = async () => {
+		clearValidationErrors()
+
+		try {
+			const { front, back } = schema.parse(form)
+			await cardStore.addCard(front, back)
+		} catch (err) {
+			if (err instanceof z.ZodError) {
+				err.errors.forEach((error) => {
+					const path = error.path.join('.')
+					errors.value[path] = error.message
+				})
+			}
+		}
 	}
 
-	async function handleReview(cardId: string, grade: Grade) {
+	const handleReview = async (cardId: string, grade: Grade) => {
 		await cardStore.reviewCard(cardId, grade)
+	}
+
+	const clearValidationErrors = () => {
+		errors.value = {}
 	}
 
 	onMounted(() => {
@@ -41,13 +68,13 @@
 <template>
 	<div class="container">
 		<section class="space-y-4">
-			<form @submit.prevent="handleAddCard">
+			<form @submit.prevent="handleAddCard" @keypress.enter="handleAddCard">
 				<div class="mb-4 space-y-4">
-					<input v-model="front" class="input input-bordered w-full" placeholder="Front side" />
-					<input v-model="back" class="input input-bordered w-full" placeholder="Back side" />
+					<TextField v-model="form.front" :error="errors.front" placeholder="Front side" />
+					<TextField v-model="form.back" :error="errors.back" placeholder="Back side" />
 				</div>
 
-				<button class="btn" type="submit">Add Card</button>
+				<Button type="submit">Add Card</Button>
 			</form>
 
 			<hr />
@@ -64,10 +91,10 @@
 						</p>
 
 						<div class="flex gap-2">
-							<button class="btn" @click="handleReview(card.id, Rating.Again)">Again</button>
-							<button class="btn" @click="handleReview(card.id, Rating.Hard)">Hard</button>
-							<button class="btn" @click="handleReview(card.id, Rating.Good)">Good</button>
-							<button class="btn" @click="handleReview(card.id, Rating.Easy)">Easy</button>
+							<Button @click="handleReview(card.id, Rating.Again)">Again</Button>
+							<Button @click="handleReview(card.id, Rating.Hard)">Hard</Button>
+							<Button @click="handleReview(card.id, Rating.Good)">Good</Button>
+							<Button @click="handleReview(card.id, Rating.Easy)">Easy</Button>
 						</div>
 					</div>
 				</div>
