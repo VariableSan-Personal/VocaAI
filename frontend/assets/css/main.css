@@ -1,0 +1,3 @@
+.text-disabled {
+	@apply bg-opacity-20 opacity-20;
+}

@@ -35,7 +35,7 @@
 <template>
 	<Button
 		variant="ghost"
-		class="group no-animation flex-col items-start justify-start px-0 disabled:bg-transparent"
+		class="group no-animation w-full flex-col items-start justify-start px-0 disabled:bg-transparent"
 		:disabled="disabled"
 		no-hover
 		@click="dialog?.showModal()"

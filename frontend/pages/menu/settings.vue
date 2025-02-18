@@ -13,11 +13,11 @@
 
 			<SettingsAppearance />
 
-			<SettingsGeneral />
+			<!-- <SettingsGeneral />
 
 			<SettingsNotification />
 
-			<SettingsPronunciation />
+			<SettingsPronunciation /> -->
 		</div>
 	</div>
 </template>

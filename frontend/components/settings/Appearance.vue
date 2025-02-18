@@ -18,10 +18,7 @@
 				@update:model-value="(theme: string) => toggleDark(theme === 'Dark')"
 			/>
 
-			<div class="flex items-center justify-between">
-				<p class="font-medium">Turn on animation</p>
-				<input type="checkbox" class="toggle" disabled />
-			</div>
+			<Checkbox label="Turn on animation" variant="toggle" disabled />
 
 			<SelectionDialog title="UI language" :list="['Match system language']" disabled />
 		</div>
