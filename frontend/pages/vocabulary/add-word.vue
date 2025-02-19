@@ -4,6 +4,7 @@
 
 	type Schema = z.output<typeof schema>
 
+	// TODO: add option to choose a deck in header
 	definePageMeta({
 		showBack: true,
 		hideBottomNav: true,

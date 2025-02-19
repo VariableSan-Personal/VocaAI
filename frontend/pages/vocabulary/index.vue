@@ -3,20 +3,7 @@
 		title: 'Vocabulary',
 	})
 
-	const generalList = ref(true)
-	const oxfordList = ref(true)
-
-	const categories = [
-		{
-			title: 'Add category',
-			icon: 'uil:plus',
-			disabled: false,
-			onClick: () => {},
-		},
-		{ title: 'Idioms', words: 2, icon: 'uil:water', disabled: true },
-		{ title: 'Linking words', words: 46, icon: 'uil:ruler', disabled: true, progress: 87 },
-		{ title: 'Свои слова', words: 79, icon: 'uil:camera', disabled: true, progress: 5 },
-	]
+	const cardStore = useCardStore()
 </script>
 
 <template>
@@ -29,41 +16,30 @@
 			</teleport>
 
 			<form class="form-control px-4">
-				<TextField icon-name="uil:search" placeholder="Search for words..." />
+				<TextField disabled icon-name="uil:search" placeholder="Search for words..." />
 			</form>
 
 			<ul class="menu">
-				<li
-					v-for="(item, index) in categories"
-					:key="index"
-					:class="{ disabled: item.disabled }"
-					@click="item.onClick"
-				>
-					<div class="grid gap-4">
+				<li>
+					<NuxtLink class="grid gap-4" :to="{ name: 'vocabulary-new-deck' }">
+						<Icon name="uil:plus" class="col-span-1" />
+						<div class="col-span-9 flex flex-col">
+							<span>Create new deck</span>
+						</div>
+					</NuxtLink>
+				</li>
+
+				<li v-for="(item, index) in cardStore.decks" :key="index">
+					<NuxtLink
+						class="grid gap-4"
+						:to="{ name: 'vocabulary-deckId', params: { deckId: item.id } }"
+					>
 						<Icon :name="item.icon" class="col-span-1" />
 						<div class="col-span-9 flex flex-col">
-							<span>{{ item.title }}</span>
-							<span v-if="item.words">{{ item.words }} words</span>
+							<span>{{ item.name }}</span>
+							<span v-if="item.cardCount">{{ item.cardCount }} words</span>
 						</div>
-						<span v-if="item.progress" class="col-span-2 flex justify-end text-gray-500">
-							{{ item.progress }}%
-						</span>
-					</div>
-				</li>
-			</ul>
-
-			<hr class="my-2" />
-
-			<ul class="menu">
-				<li>
-					<details :open="generalList">
-						<summary>New General Service List</summary>
-					</details>
-				</li>
-				<li>
-					<details :open="oxfordList">
-						<summary>Oxford 3000 & 5000</summary>
-					</details>
+					</NuxtLink>
 				</li>
 			</ul>
 		</div>
