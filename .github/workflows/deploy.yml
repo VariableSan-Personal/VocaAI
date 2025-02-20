@@ -2,39 +2,32 @@ name: Deploy Application
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Install rsync
-        run: sudo apt-get update && sudo apt-get install -y rsync
-      
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SERVER_KEY }}
-      
-      - name: Add host key
+      - name: Клонирование репозитория
+        uses: actions/checkout@v3
+
+      - name: Настройка SSH-доступа
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-      
-      - name: Deploy project files
+          echo "${{ secrets.SERVER_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Копирование файлов на сервер
         run: |
-          # Создаем директорию проекта, если её нет
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p ${{ secrets.SERVER_PATH }}"
-          
-          # Копируем всё содержимое репозитория на сервер, сохраняя структуру
-          rsync -avz --exclude '.git' --exclude '.github' --exclude '.vscode' ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}/
-      
-      - name: Build and restart containers
+          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" . ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+
+      - name: Перезапуск контейнеров
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "cd ${{ secrets.SERVER_PATH }} && docker-compose down && docker-compose up -d --build"
-          
-      - name: Cleanup
-        run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "docker system prune -af --volumes"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            cd ${{ secrets.SERVER_PATH }}
+            docker compose down
+            docker compose up --build -d
+          EOF
