@@ -1,25 +1,32 @@
-FROM node:alpine as builder
+# Use Node.js Alpine for build stage with all dev tools
+FROM node:22.12.0-alpine AS build
 
-WORKDIR /usr/src/app
-ENV PATH /usr/src/node_modules/.bin:$PATH
+# Set working directory inside the container
+WORKDIR /app
 
-# inject all environment vars we'll need
-ARG VITE_DOTNET_SERVICE_URL
-# expose the variable to the finished container
-ENV VITE_DOTNET_SERVICE_URL=${VITE_DOTNET_SERVICE_URL}
-
+# Copy package files for dependency installation
 COPY package*.json ./
-RUN npm install
 
+# Install dependencies using clean install for reproducibility
+RUN npm ci
+
+# Copy entire project to container
 COPY . .
 
-FROM builder as prod-builder
+# Build the Nuxt application
 RUN npm run build
 
-FROM nginx:stable-alpine as production-stage
+# Use distroless Node.js image for production for minimal, secure runtime
+FROM gcr.io/distroless/nodejs22-debian12 AS prod
 
-COPY --from=prod-builder /usr/src/app/dist /usr/share/nginx/html
+# Set working directory in production container
+WORKDIR /app
 
-EXPOSE 80
+# Copy built output from build stage to production container
+COPY --from=build /app/.output ./.output
 
-CMD ["nginx", "-g", "daemon off;"]
+# Expose port the app will run on
+EXPOSE 3000
+
+# Command to start the Nuxt server from built output
+CMD ["./.output/server/index.mjs"]

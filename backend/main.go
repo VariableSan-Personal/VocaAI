@@ -6,17 +6,32 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	port := "localhost:4000"
+	// Get port from environment variable or use default
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	// Use 0.0.0.0 to listen on all interfaces
+	addr := fmt.Sprintf("0.0.0.0:%s", port)
 
 	database.InitDatabase()
 	mux := routes.SetupRoutes()
 
-	message := fmt.Sprintf("starting server on %s", port)
+	message := fmt.Sprintf("Starting server on %s", addr)
 	fmt.Println(message)
 
-	err := http.ListenAndServe(port, mux)
-	log.Fatal(err)
+	server := &http.Server{
+		Addr:    addr,
+		Handler: mux,
+	}
+
+	log.Printf("Server is running on http://%s", addr)
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
 }
