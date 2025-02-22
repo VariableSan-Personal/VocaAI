@@ -34,7 +34,6 @@ jobs:
             docker compose up --build -d
           EOF
 
-      - name: Cleanup
-        if: ${{ secrets.RUN_CLEANUP && secrets.RUN_CLEANUP == 'true' }}
-        run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "docker system prune -af --volumes"
+      # - name: Cleanup
+      #   run: |
+      #     ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "docker system prune -af --volumes"
