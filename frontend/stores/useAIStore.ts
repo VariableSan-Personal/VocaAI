@@ -5,7 +5,7 @@ import {
 	LocalStorageKeys,
 	type AIServiceConfig,
 } from '@/shared'
-import { useCustomLogger } from '~/composables/useLogger'
+import { useCustomLogger } from '~/composables/useCustomLogger'
 
 export const useAIStore = defineStore('ai', () => {
 	const logger = useCustomLogger('useAIStore')

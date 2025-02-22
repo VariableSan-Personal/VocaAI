@@ -13,6 +13,7 @@
 
 	const { getCurrentService } = useAIStore()
 	const { showError, showWarning } = useGlobalStore()
+	const logger = useCustomLogger('AddWord Page')
 
 	const schema = z.object({
 		word: z.string().min(1, 'Word is required'),
@@ -65,7 +66,7 @@
 			example.translation = translated
 		} catch (error) {
 			showError('Failed to generate example. Please try again.')
-			console.error(error)
+			logger.error(error)
 		}
 	}
 
@@ -74,7 +75,7 @@
 
 		try {
 			const validatedData = schema.parse(form)
-			console.log('Form submitted:', validatedData)
+			logger.info(`Form submitted: ${validatedData}`)
 		} catch (err) {
 			if (err instanceof z.ZodError) {
 				err.errors.forEach((error) => {

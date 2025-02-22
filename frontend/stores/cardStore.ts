@@ -5,6 +5,8 @@ import { FSRS_PARAMETERS, StorageError, type Card, type Deck } from '~/shared'
 import { IndexedDBStorage } from '~/shared/storage/services/indexeddb'
 
 export const useCardStore = defineStore('cards', () => {
+	const logger = useCustomLogger('useCardStore')
+
 	const storage = new IndexedDBStorage()
 	const fsrs = new FSRS(generatorParameters(FSRS_PARAMETERS))
 
@@ -69,7 +71,7 @@ export const useCardStore = defineStore('cards', () => {
 			await storage.clearDatabase()
 			cards.value = []
 		} catch (e) {
-			console.error(e)
+			logger.error(e)
 		}
 	}
 
@@ -79,7 +81,7 @@ export const useCardStore = defineStore('cards', () => {
 			await storage.init()
 			await loadDecks()
 		} catch (e) {
-			console.error(e)
+			logger.error(e)
 		} finally {
 			loading.value = false
 		}

@@ -6,7 +6,8 @@
 	import SettingsDynamicFormField from '~/components/settings/SettingsDynamicFormField.vue'
 
 	const aiStore = useAIStore()
-	const { showError, showSuccess } = useGlobalStore()
+	const { showSuccess } = useGlobalStore()
+	const logger = useCustomLogger('AIService Page')
 
 	const items = Object.values(AIServiceType)
 
@@ -22,7 +23,7 @@
 				aiStore.setupAIService(selectedService.value, aiConfig.value)
 				showSuccess('AI service settings updated')
 			} catch (error) {
-				console.error(error)
+				logger.error(error)
 			}
 		}
 	}
