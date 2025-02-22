@@ -34,6 +34,9 @@ jobs:
             docker compose up --build -d
           EOF
 
-      # - name: Cleanup
-      #   run: |
-      #     ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "docker system prune -af --volumes"
+      - name: Cleanup
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
+            docker container prune -f &&
+            docker image prune -f --filter 'dangling=true'
+          "
