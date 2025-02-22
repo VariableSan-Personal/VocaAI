@@ -1,8 +1,13 @@
 import * as Sentry from '@sentry/nuxt'
 
-// Only run `init` when process.env.SENTRY_DSN is available.
-if (process.env.SENTRY_DSN) {
-	Sentry.init({
-		dsn: 'your-dsn',
-	})
-}
+Sentry.init({
+	dsn: process.env.SENTRY_DSN,
+
+	// We recommend adjusting this value in production, or using tracesSampler
+	// for finer control
+	tracesSampleRate: 1.0,
+
+	// Setting this option to true will print useful information to the console while you're setting up Sentry.
+	debug: false,
+	enabled: process.env.NODE_ENV !== 'development',
+})
