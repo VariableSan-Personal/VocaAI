@@ -14,6 +14,7 @@ export default defineNuxtConfig({
 		'@vite-pwa/nuxt',
 		'@nuxt/icon',
 		'@vueuse/nuxt',
+		'@sentry/nuxt/module',
 	],
 	build: {
 		transpile: [],
