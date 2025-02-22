@@ -15,6 +15,10 @@ export class AIServiceFactory {
 		return AIServiceFactory.instance
 	}
 
+	/**
+	 * Creates and initializes a specific AI service instance based on the provided type and configuration.
+	 * @throws {AIServiceValidationError} If an unsupported service type is provided or if a required field is missing or a field value is out of range.
+	 */
 	createService(type: AIServiceType, config: AIServiceConfig): AbstractAIService {
 		switch (type) {
 			case AIServiceType.Gemini:

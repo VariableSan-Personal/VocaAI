@@ -1,19 +1,6 @@
 <script setup lang="ts">
-	import { useAIStore, useGlobalStore } from '@/stores'
-
-	const aiStore = useAIStore()
-	const { showNotification } = useGlobalStore()
-	const { init } = useCardStore()
-
-	onMounted(() => {
-		init()
-
-		try {
-			aiStore.restoreService()
-		} catch (error) {
-			showNotification(error as string)
-		}
-	})
+	useAIStore()
+	useCardStore()
 </script>
 
 <template>

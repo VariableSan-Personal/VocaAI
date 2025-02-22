@@ -1,5 +1,6 @@
 import { useAIFetch } from '~/composables/useAIFetch'
 import {
+	AIServiceError,
 	AIServiceType,
 	SERVICE_NAMES,
 	type ConfigField,
@@ -61,7 +62,7 @@ export class GeminiService extends AbstractAIService {
 		const text = this.extractText(data)
 
 		if (!text) {
-			throw new Error('Invalid response format from Gemini API')
+			throw new AIServiceError('Invalid response format from Gemini API')
 		}
 
 		return text

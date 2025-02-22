@@ -1,10 +1,16 @@
-import type { AIServiceConfig, ConfigField } from '../lib'
+import { AIServiceValidationError, type AIServiceConfig, type ConfigField } from '../lib'
 
 export abstract class AbstractAIService {
 	protected config: AIServiceConfig
 	protected SOURCE_LANGUAGE = 'English'
 	protected TARGET_LANGUAGE = 'Russian'
 
+	/**
+	 * Creates an instance of the AI service.
+	 * @param {AIServiceConfig} config - Configuration settings for the AI service
+	 * @param {boolean} [instantValidation=true] - If true, validates the config immediately upon construction. Defaults to true.
+	 * @throws {Error} When instantValidation is true and the config validation fails
+	 */
 	constructor(config: AIServiceConfig, instantValidation = true) {
 		if (instantValidation) {
 			this.validateConfig(config)
@@ -16,6 +22,11 @@ export abstract class AbstractAIService {
 	abstract getName(): string
 	abstract getConfigFields(): ConfigField[]
 
+	/**
+	 * Validates the configuration object.
+	 * @param config - The configuration object to validate.
+	 * @throws {AIServiceValidationError} If a required field is missing or a field value is out of range.
+	 */
 	validateConfig(config: AIServiceConfig): void {
 		// TODO: Add Zod schema validation for the config object
 
@@ -23,16 +34,16 @@ export abstract class AbstractAIService {
 
 		for (const field of configFields) {
 			if (field.required && !config[field.name]) {
-				throw new Error(`Missing required field: ${field.label}`)
+				throw new AIServiceValidationError(`Missing required field: ${field.label}`)
 			}
 
 			if (field.type === 'number' && config[field.name]) {
 				const value = Number(config[field.name])
 				if (field.min !== undefined && value < field.min) {
-					throw new Error(`${field.label} must be at least ${field.min}`)
+					throw new AIServiceValidationError(`${field.label} must be at least ${field.min}`)
 				}
 				if (field.max !== undefined && value > field.max) {
-					throw new Error(`${field.label} must be at most ${field.max}`)
+					throw new AIServiceValidationError(`${field.label} must be at most ${field.max}`)
 				}
 			}
 		}

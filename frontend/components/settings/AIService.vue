@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 	import { AIServiceType, type AIServiceConfig, type ConfigField } from '@/shared'
-	import { useAIStore, useGlobalStore } from '@/stores'
 
 	import CardSettings from '~/components/settings/Card.vue'
 	import SelectionDialog from '~/components/settings/SelectionDialog.vue'
@@ -20,10 +19,10 @@
 	const handleServiceChange = () => {
 		if (selectedService.value && aiConfig.value) {
 			try {
-				aiStore.initService(selectedService.value, aiConfig.value)
+				aiStore.setupAIService(selectedService.value, aiConfig.value)
 				showSuccess('AI service settings updated')
 			} catch (error) {
-				showError(error as string)
+				console.error(error)
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Grade } from 'ts-fsrs'
 import { createEmptyCard, FSRS, generatorParameters } from 'ts-fsrs'
-import { FSRS_PARAMETERS, type Card, type Deck } from '~/shared'
+import { FSRS_PARAMETERS, StorageError, type Card, type Deck } from '~/shared'
 import { IndexedDBStorage } from '~/shared/storage/services/indexeddb'
 
 export const useCardStore = defineStore('cards', () => {
@@ -12,18 +12,6 @@ export const useCardStore = defineStore('cards', () => {
 	const decks = ref<Deck[]>([])
 	const currentDeckId = ref<string | null>(null)
 	const loading = ref(false)
-
-	async function init() {
-		loading.value = true
-		try {
-			await storage.init()
-			await loadDecks()
-		} catch (e) {
-			console.error(e)
-		} finally {
-			loading.value = false
-		}
-	}
 
 	async function loadDecks() {
 		decks.value = await storage.getDecks()
@@ -41,7 +29,7 @@ export const useCardStore = defineStore('cards', () => {
 
 	async function addCard(front: string, back: string) {
 		if (!currentDeckId.value) {
-			throw new Error('No deck selected')
+			throw new StorageError('No deck selected')
 		}
 
 		const date = new Date()
@@ -85,12 +73,27 @@ export const useCardStore = defineStore('cards', () => {
 		}
 	}
 
+	async function init() {
+		loading.value = true
+		try {
+			await storage.init()
+			await loadDecks()
+		} catch (e) {
+			console.error(e)
+		} finally {
+			loading.value = false
+		}
+	}
+
+	onMounted(() => {
+		init()
+	})
+
 	return {
 		cards,
 		decks,
 		currentDeckId,
 		loading,
-		init,
 		loadDecks,
 		loadCardsForDeck,
 		addDeck,
