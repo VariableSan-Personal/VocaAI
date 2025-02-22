@@ -4,11 +4,9 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineNuxtConfig({
 	compatibilityDate: '2024-11-01',
 	devtools: { enabled: false },
-
 	experimental: {
 		appManifest: false,
 	},
-
 	modules: [
 		'@nuxt/eslint',
 		'@nuxtjs/tailwindcss',
@@ -16,39 +14,28 @@ export default defineNuxtConfig({
 		'@vite-pwa/nuxt',
 		'@nuxt/icon',
 		'@vueuse/nuxt',
-		'@sentry/nuxt/module',
 	],
-
 	build: {
 		transpile: [],
 	},
-
 	typescript: {
 		typeCheck: true,
 	},
-
 	css: ['~/assets/css/main.css'],
-
 	vite: {
 		vue: {
 			template: {},
 		},
 	},
-
 	runtimeConfig: {
 		public: {
 			baseUrl: 'http://localhost:4000/api/v1',
 			geminiUrl: 'https://generativelanguage.googleapis.com/v1beta/models',
-			sentry: {
-				dsn: process.env.SENTRY_DSN,
-			},
 		},
 	},
-
 	alias: {
 		'@': fileURLToPath(new URL('./', import.meta.url)),
 	},
-
 	pwa: {
 		registerType: 'autoUpdate',
 		injectRegister: 'auto',
@@ -157,17 +144,5 @@ export default defineNuxtConfig({
 			suppressWarnings: true,
 			type: 'module',
 		},
-	},
-
-	sentry: {
-		sourceMapsUploadOptions: {
-			org: 'variablesan',
-			project: 'vocaai-cards',
-			authToken: process.env.SENTRY_AUTH_TOKEN,
-		},
-	},
-
-	sourcemap: {
-		client: 'hidden',
 	},
 })

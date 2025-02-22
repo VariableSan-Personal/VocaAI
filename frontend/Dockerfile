@@ -29,4 +29,4 @@ COPY --from=build /app/.output ./.output
 EXPOSE 3000
 
 # Command to start the Nuxt server from built output
-CMD ["node", "--import", "./.output/server/sentry.server.config.mjs", "./.output/server/index.mjs"]
+CMD ["./.output/server/index.mjs"]

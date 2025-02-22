@@ -22,6 +22,6 @@ export interface Deck {
 	created: number
 	modified: number
 	deleted?: boolean
-	icon: string
-	cardCount: number
+  icon: string
+  cardCount: number
 }
