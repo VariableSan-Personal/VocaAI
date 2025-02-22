@@ -35,5 +35,6 @@ jobs:
           EOF
 
       - name: Cleanup
+        if: ${{ secrets.RUN_CLEANUP == 'true' }}
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "docker system prune -af --volumes"
