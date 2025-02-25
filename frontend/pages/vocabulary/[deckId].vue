@@ -1,138 +1,154 @@
 <script lang="ts" setup>
-	import type { CustomPageMeta } from '~/shared'
+	import { StorageError, type CustomPageMeta } from '~/shared'
 
 	definePageMeta({
 		showBack: true,
 		hideBottomNav: true,
 	} satisfies CustomPageMeta)
 
+	const logger = useCustomLogger('vocabulary-deckId')
 	const route = useRoute()
 	const router = useRouter()
-
 	const cardStore = useCardStore()
+	const { showError } = useGlobalStore()
 
-	const initDeck = async () => {
-		if (route.params.deckId) {
+	const categoryActions = [
+		{
+			icon: 'uil:process',
+			title: 'Reset progress',
+			onClick: () => {},
+		},
+		{
+			icon: 'uil:pen',
+			title: 'Edit this category',
+			onClick: () => {},
+		},
+		{
+			icon: 'uil:times',
+			title: 'Clear this category',
+			onClick: () => {},
+		},
+		{
+			icon: 'uil:trash',
+			title: 'Remove this category',
+			onClick: () => {},
+		},
+		{
+			type: 'separator',
+		},
+		{
+			icon: 'uil:file-medical',
+			title: 'Import words',
+			onClick: () => {},
+		},
+		{
+			icon: 'uil:share-alt',
+			title: 'Share category',
+			onClick: () => {},
+		},
+	]
+
+	const wordList = [
+		{
+			status: 'New',
+			source: 'addendum',
+			target: 'добавление, дополнение',
+		},
+		{
+			status: 'New',
+			source: 'ado',
+			target: 'суматоха',
+		},
+		{
+			status: 'New',
+			source: 'adversary',
+			target: 'противник',
+		},
+	]
+
+	const loadCards = async () => {
+		try {
 			await cardStore.loadCardsForDeck(route.params.deckId as string)
-		} else {
+		} catch (error) {
+			if (error instanceof StorageError) {
+				showError(error.message)
+			}
+			logger.error(error)
 			router.push({ name: 'vocabulary' })
 		}
 	}
 
-	onMounted(() => {
-		initDeck()
-	})
+	watch(
+		() => [cardStore.initialized],
+		() => {
+			if (cardStore.initialized) {
+				loadCards()
+			}
+		},
+		{
+			immediate: true,
+		}
+	)
 </script>
 
 <template>
-	<div class="container">
-		<section>
-			<!-- Category Actions Card -->
-			<div class="mx-4 mb-6 overflow-hidden rounded-lg bg-gray-800">
-				<div class="border-b border-gray-700">
-					<button class="flex w-full items-center gap-3 p-4 text-left hover:bg-gray-700">
-						<i class="i-uil-history text-2xl text-blue-400"></i>
-						<span class="text-xl">Reset progress</span>
-					</button>
-				</div>
+	<div>
+		<ClientOnly>
+			<Teleport to="#headerTitle">
+				{{ cardStore.currentDeck?.name }}
+			</Teleport>
+		</ClientOnly>
 
-				<div class="border-b border-gray-700">
-					<button class="flex w-full items-center gap-3 p-4 text-left hover:bg-gray-700">
-						<i class="i-uil-edit text-2xl text-blue-400"></i>
-						<span class="text-xl">Edit this category</span>
-					</button>
-				</div>
+		<div class="container space-y-6">
+			<section>
+				<ul class="menu w-full gap-2 rounded-box">
+					<template v-for="(category, index) in categoryActions" :key="index">
+						<hr v-if="category.type === 'separator'" class="my-2" />
 
-				<div class="border-b border-gray-700">
-					<button class="flex w-full items-center gap-3 p-4 text-left hover:bg-gray-700">
-						<i class="i-uil-times text-2xl text-blue-400"></i>
-						<span class="text-xl">Clear this category</span>
-					</button>
-				</div>
-
-				<div>
-					<button class="flex w-full items-center gap-3 p-4 text-left hover:bg-gray-700">
-						<i class="i-uil-trash text-2xl text-blue-400"></i>
-						<span class="text-xl">Remove this category</span>
-					</button>
-				</div>
-			</div>
-
-			<!-- Secondary Actions Card -->
-			<div class="mx-4 mb-6 overflow-hidden rounded-lg bg-gray-800">
-				<div class="border-b border-gray-700">
-					<button class="flex w-full items-center gap-3 p-4 text-left hover:bg-gray-700">
-						<i class="i-uil-file-plus-alt text-2xl text-blue-400"></i>
-						<span class="text-xl">Import words</span>
-					</button>
-				</div>
-
-				<div>
-					<button class="flex w-full items-center gap-3 p-4 text-left hover:bg-gray-700">
-						<i class="i-uil-share-alt text-2xl text-blue-400"></i>
-						<span class="text-xl">Share category</span>
-					</button>
-				</div>
-			</div>
-
-			<!-- Words Section -->
-			<div class="mx-4 mb-2 flex items-center justify-between">
-				<h2 class="text-2xl text-gray-400">Words</h2>
-				<div class="flex items-center gap-2">
-					<span class="text-xl text-blue-400">By status</span>
-					<div class="flex flex-col">
-						<i class="i-uil-sort-amount-up text-xl text-blue-400"></i>
-						<i class="i-uil-sort-amount-down -mt-1 text-xl text-blue-400"></i>
-					</div>
-				</div>
-			</div>
-
-			<!-- Word List -->
-			<div class="mx-4 flex-1">
-				<div class="mb-1 overflow-hidden rounded-lg bg-gray-800">
-					<div class="border-l-4 border-gray-600 p-4">
-						<div class="text-gray-400">New</div>
-						<div class="text-2xl font-bold">addendum</div>
-						<div class="text-gray-300">добавление, дополнение</div>
-						<div class="flex justify-end">
-							<button class="btn btn-circle btn-ghost">
-								<i class="i-uil-play text-2xl text-gray-500"></i>
+						<li v-else>
+							<button class="grid gap-4">
+								<Icon :name="category.icon!" size="20" class="col-span-1" />
+								<span class="col-span-9">{{ category.title }}</span>
 							</button>
-						</div>
-					</div>
+						</li>
+					</template>
+				</ul>
+			</section>
+
+			<section>
+				<div class="mx-4 mb-2 flex items-center justify-between">
+					<h2 class="text-base text-secondary">Words</h2>
+
+					<Button disabled variant="link" class="flex items-center gap-2 text-primary no-underline">
+						<span class="text-base">By status</span>
+						<Icon name="uil:sort" />
+					</Button>
 				</div>
 
-				<div class="mb-1 overflow-hidden rounded-lg bg-gray-800">
-					<div class="border-l-4 border-gray-600 p-4">
-						<div class="text-gray-400">New</div>
-						<div class="text-2xl font-bold">ado</div>
-						<div class="text-gray-300">суматоха</div>
-						<div class="flex justify-end">
-							<button class="btn btn-circle btn-ghost">
-								<i class="i-uil-play text-2xl text-gray-500"></i>
-							</button>
-						</div>
-					</div>
-				</div>
+				<ul class="menu space-y-2 rounded-xl bg-neutral">
+					<li v-for="(word, index) in wordList" :key="index">
+						<div class="relative flex flex-col items-start gap-y-0 py-2">
+							<div class="absolute left-0 top-[10%] h-4/5 w-1 bg-secondary"></div>
+							<p class="text-sm text-secondary">
+								{{ word.status }}
+							</p>
+							<h6 class="text-base">
+								{{ word.source }}
+							</h6>
+							<p>
+								{{ word.target }}
+							</p>
 
-				<div class="mb-1 overflow-hidden rounded-lg bg-gray-800">
-					<div class="border-l-4 border-gray-600 p-4">
-						<div class="text-gray-400">New</div>
-						<div class="text-2xl font-bold">adversary</div>
-						<div class="text-gray-300">противник, искуситель, враг</div>
-						<div class="flex justify-end">
-							<button class="btn btn-circle btn-ghost">
-								<i class="i-uil-play text-2xl text-gray-500"></i>
-							</button>
+							<!-- TODO: Add a button to play audio pronunciation of the word -->
 						</div>
-					</div>
-				</div>
-			</div>
+					</li>
+				</ul>
+			</section>
+		</div>
 
-			<Button variant="primary" class="fixed bottom-6 right-1/2 !translate-x-1/2 rounded-xl">
-				<Icon name="uil:plus" />
-				Word
-			</Button>
-		</section>
+		<Button variant="primary" class="fixed bottom-6 right-1/2 !translate-x-1/2 rounded-xl" disabled>
+			<Icon name="uil:plus" />
+			Word
+		</Button>
 	</div>
 </template>

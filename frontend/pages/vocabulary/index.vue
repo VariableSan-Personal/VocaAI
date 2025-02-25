@@ -9,17 +9,23 @@
 <template>
 	<div class="container">
 		<div class="card m-2 shadow-lg">
-			<teleport to="#headerContent">
-				<Button variant="link" class="px-0 uppercase text-primary disabled:bg-transparent" disabled>
-					Import
-				</Button>
-			</teleport>
+			<ClientOnly>
+				<Teleport to="#headerContent">
+					<Button
+						variant="link"
+						class="px-0 uppercase text-primary disabled:bg-transparent"
+						disabled
+					>
+						Import
+					</Button>
+				</Teleport>
+			</ClientOnly>
 
 			<form class="form-control px-4">
 				<TextField disabled icon-name="uil:search" placeholder="Search for words..." />
 			</form>
 
-			<ul class="menu">
+			<ul class="menu space-y-2">
 				<li>
 					<NuxtLink class="grid gap-4" :to="{ name: 'vocabulary-new-deck' }">
 						<Icon name="uil:plus" class="col-span-1" />

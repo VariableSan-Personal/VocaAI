@@ -7,7 +7,7 @@
 	definePageMeta({
 		hideBottomNav: true,
 		showBack: true,
-		title: 'New category',
+		title: 'New deck',
 	} satisfies CustomPageMeta)
 
 	const router = useRouter()
@@ -94,19 +94,18 @@
 					</div>
 
 					<div class="grid grid-cols-4 gap-4">
-						<Icon
+						<div
 							v-for="(icon, index) in iconList"
 							:key="index"
-							size="32"
 							:class="[
-								'mx-auto cursor-pointer',
+								'mx-auto flex cursor-pointer rounded-full p-1',
 								{
-									'text-primary': form.icon === icon,
+									'bg-primary text-white': form.icon === icon,
 								},
 							]"
-							:name="icon"
-							@click="() => (form.icon = icon)"
-						/>
+						>
+							<Icon size="34" :name="icon" @click="() => (form.icon = icon)" />
+						</div>
 					</div>
 				</div>
 

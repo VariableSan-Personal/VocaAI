@@ -49,8 +49,8 @@
 	<dialog ref="dialog" class="modal modal-bottom sm:modal-middle">
 		<div class="modal-box pt-2">
 			<form method="dialog" class="flex justify-end">
-				<Button variant="ghost" class="px-0" no-hover>
-					<Icon name="uil:x" size="24" />
+				<Button variant="ghost" class="px-0" no-hover type="submit">
+					<Icon name="uil:times" size="24" />
 				</Button>
 			</form>
 

@@ -9,7 +9,7 @@
 		warning: 'btn-warning',
 		error: 'btn-error',
 		ghost: 'btn-ghost',
-		link: 'btn-link',
+		link: 'btn-link disabled:bg-transparent',
 		outline: 'btn-outline',
 	}
 
@@ -39,7 +39,11 @@
 	const buttonClass = computed(() => [
 		'btn',
 		colorVariants[props.variant],
-		{ 'btn-disabled': props.disabled, 'hover:bg-transparent': props.noHover },
+		{
+			'btn-disabled': props.disabled,
+			'hover:bg-transparent': props.noHover,
+			'text-disabled': props.variant === 'link' && props.disabled,
+		},
 	])
 
 	const handleClick = (event: MouseEvent) => {

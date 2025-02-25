@@ -7,21 +7,33 @@ import { IndexedDBStorage } from '~/shared/storage/services/indexeddb'
 export const useCardStore = defineStore('cards', () => {
 	const logger = useCustomLogger('useCardStore')
 
+	// TODO: Allow the user to select storage
 	const storage = new IndexedDBStorage()
 	const fsrs = new FSRS(generatorParameters(FSRS_PARAMETERS))
 
 	const cards = ref<Card[]>([])
 	const decks = ref<Deck[]>([])
-	const currentDeckId = ref<string | null>(null)
+	const currentDeck = ref<Deck | null>(null)
 	const loading = ref(false)
+	const initialized = ref(false)
 
 	async function loadDecks() {
 		decks.value = await storage.getDecks()
 	}
 
+	/**
+	 * Loads cards for a specific deck and sets it as the current deck.
+	 * @throws {StorageError} When no deck exists with the provided ID
+	 */
 	async function loadCardsForDeck(deckId: string) {
-		currentDeckId.value = deckId
-		cards.value = await storage.getCardsForDeck(deckId)
+		const deck = await storage.getDeck(deckId)
+
+		if (!deck) {
+			throw new StorageError('There is no deck with this ID')
+		}
+
+		currentDeck.value = deck
+		cards.value = await storage.getCardsForDeck(deck.id)
 	}
 
 	async function addDeck(name: string, icon: string) {
@@ -29,8 +41,12 @@ export const useCardStore = defineStore('cards', () => {
 		decks.value.push(deck)
 	}
 
+	/**
+	 * Adds a new card to the current deck.
+	 * @throws {StorageError} If no deck is currently selected
+	 */
 	async function addCard(front: string, back: string) {
-		if (!currentDeckId.value) {
+		if (!currentDeck.value) {
 			throw new StorageError('No deck selected')
 		}
 
@@ -38,7 +54,7 @@ export const useCardStore = defineStore('cards', () => {
 		const card: Card = {
 			...createEmptyCard(),
 			id: crypto.randomUUID(),
-			deckId: currentDeckId.value,
+			deckId: currentDeck.value.id,
 			front,
 			back,
 			created: date.getTime(),
@@ -80,6 +96,7 @@ export const useCardStore = defineStore('cards', () => {
 		try {
 			await storage.init()
 			await loadDecks()
+			initialized.value = true
 		} catch (e) {
 			logger.error(e)
 		} finally {
@@ -94,8 +111,9 @@ export const useCardStore = defineStore('cards', () => {
 	return {
 		cards,
 		decks,
-		currentDeckId,
+		currentDeck,
 		loading,
+		initialized,
 		loadDecks,
 		loadCardsForDeck,
 		addDeck,

@@ -13,7 +13,7 @@
 
 	const { getCurrentService } = useAIStore()
 	const { showError, showWarning } = useGlobalStore()
-	const logger = useCustomLogger('AddWord Page')
+	const logger = useCustomLogger('vocabulary-add-word')
 
 	const schema = z.object({
 		word: z.string().min(1, 'Word is required'),
@@ -48,6 +48,11 @@
 	}
 
 	const generateExample = async (index: number) => {
+		if (!form.word) {
+			showWarning('Provide a word for an example')
+			return
+		}
+
 		const currentService = getCurrentService()
 		if (!currentService) {
 			showWarning('Please select a service before generating an example.')
@@ -122,8 +127,8 @@
 					>
 						<div class="mb-4 flex items-center justify-between">
 							<span class="font-medium">Example {{ index + 1 }}</span>
-							<Button variant="ghost" class="btn-sm" @click="removeExample(index)">
-								<Icon name="uil-times" class="text-xl" />
+							<Button variant="link" class="btn-sm" @click="removeExample(index)">
+								<Icon name="uil:times" class="text-xl" />
 							</Button>
 						</div>
 
