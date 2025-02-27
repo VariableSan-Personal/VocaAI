@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 	import { AIServiceType, type AIServiceConfig, type ConfigField } from '@/shared'
-
 	import CardSettings from '~/components/settings/Card.vue'
 	import SelectionDialog from '~/components/settings/SelectionDialog.vue'
 	import SettingsDynamicFormField from '~/components/settings/SettingsDynamicFormField.vue'
@@ -11,11 +10,10 @@
 
 	const items = Object.values(AIServiceType)
 
+	// TODO: Replace with reactive and replace watch with computed
 	const selectedService = ref(aiStore.currentServiceType)
-	const configFields = ref<ConfigField[]>(
-		aiStore.getConfigFieldsByServiceName(selectedService.value)
-	)
-	const aiConfig = ref<AIServiceConfig>(aiStore.config ?? {})
+	const configFields = ref<ConfigField[]>()
+	const aiConfig = ref<AIServiceConfig>({})
 
 	const handleServiceChange = () => {
 		if (selectedService.value && aiConfig.value) {
@@ -32,6 +30,20 @@
 		configFields.value = aiStore.getConfigFieldsByServiceName(value)
 		aiConfig.value = {}
 	}
+
+	watch(
+		() => aiStore.initialized,
+		(initialized) => {
+			if (initialized) {
+				selectedService.value = aiStore.currentServiceType
+				configFields.value = aiStore.getConfigFieldsByServiceName(selectedService.value)
+				aiConfig.value = aiStore.config ?? {}
+			}
+		},
+		{
+			immediate: true,
+		}
+	)
 </script>
 
 <template>

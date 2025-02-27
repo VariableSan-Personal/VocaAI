@@ -1,9 +1,9 @@
 import {
 	AIServiceFactory,
-	AIServiceType,
 	AIServiceValidationError,
 	LocalStorageKeys,
 	type AIServiceConfig,
+	type AIServiceType,
 } from '@/shared'
 import { useCustomLogger } from '~/composables/useCustomLogger'
 
@@ -12,9 +12,10 @@ export const useAIStore = defineStore('ai', () => {
 
 	const { showError } = useGlobalStore()
 
-	const currentServiceType = ref<AIServiceType>(AIServiceType.Gemini)
+	const currentServiceType = ref<AIServiceType>()
 	const factory = AIServiceFactory.getInstance()
 	const config = ref<AIServiceConfig | null>(null)
+	const initialized = ref(false)
 
 	const setupAIService = (type: AIServiceType, serviceConfig: AIServiceConfig) => {
 		try {
@@ -37,8 +38,11 @@ export const useAIStore = defineStore('ai', () => {
 		return factory.getCurrentService()
 	}
 
-	const getConfigFieldsByServiceName = (serviceName: AIServiceType) => {
-		return factory.getServiceConfigFields(serviceName)
+	const getConfigFieldsByServiceName = (serviceName?: AIServiceType) => {
+		if (serviceName) {
+			return factory.getServiceConfigFields(serviceName)
+		}
+		return []
 	}
 
 	const loadSavedAIConfiguration = () => {
@@ -58,12 +62,14 @@ export const useAIStore = defineStore('ai', () => {
 
 	onMounted(() => {
 		loadSavedAIConfiguration()
+		initialized.value = true
 	})
 
 	return {
 		currentServiceType,
 		factory,
 		config,
+		initialized,
 		setupAIService,
 		getCurrentService,
 		getConfigFieldsByServiceName,

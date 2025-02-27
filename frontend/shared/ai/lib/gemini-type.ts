@@ -43,3 +43,29 @@ export interface UsageMetadata {
 	candidatesTokenCount: number
 	totalTokenCount: number
 }
+
+export interface ModelCollection {
+	models: Model[]
+}
+
+export interface Model {
+	name: string
+	version: string
+	displayName: string
+	description: string
+	inputTokenLimit: number
+	outputTokenLimit: number
+	supportedGenerationMethods: SupportedGenerationMethod[]
+	temperature?: number
+	topP?: number
+	topK?: number
+	maxTemperature?: number
+}
+
+export enum SupportedGenerationMethod {
+	CountTokens = 'countTokens',
+	CreateCachedContent = 'createCachedContent',
+	CreateTunedModel = 'createTunedModel',
+	EmbedContent = 'embedContent',
+	GenerateContent = 'generateContent',
+}

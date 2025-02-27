@@ -11,12 +11,14 @@
 		<template #title>Appearance</template>
 
 		<div class="space-y-4">
-			<SelectionDialog
-				title="Theme"
-				:model-value="isDark ? 'Dark' : 'Light'"
-				:list="['Light', 'Dark']"
-				@update:model-value="(theme: string) => toggleDark(theme === 'Dark')"
-			/>
+			<ClientOnly>
+				<SelectionDialog
+					title="Theme"
+					:model-value="isDark ? 'Dark' : 'Light'"
+					:list="['Light', 'Dark']"
+					@update:model-value="(theme: string) => toggleDark(theme === 'Dark')"
+				/>
+			</ClientOnly>
 
 			<Checkbox label="Turn on animation" variant="toggle" disabled />
 

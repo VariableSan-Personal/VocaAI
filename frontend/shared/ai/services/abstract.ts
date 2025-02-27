@@ -18,16 +18,16 @@ export abstract class AbstractAIService {
 		this.config = config
 	}
 
-	abstract generateSuggestion(word: string, examples?: string[]): Promise<string>
-	abstract getName(): string
-	abstract getConfigFields(): ConfigField[]
+	public abstract generateSuggestion(word: string, examples?: string[]): Promise<string>
+	public abstract getName(): string
+	public abstract getConfigFields(): ConfigField[]
 
 	/**
 	 * Validates the configuration object.
 	 * @param config - The configuration object to validate.
 	 * @throws {AIServiceValidationError} If a required field is missing or a field value is out of range.
 	 */
-	validateConfig(config: AIServiceConfig): void {
+	public validateConfig(config: AIServiceConfig): void {
 		// TODO: Add Zod schema validation for the config object
 
 		const configFields = this.getConfigFields()
@@ -49,7 +49,7 @@ export abstract class AbstractAIService {
 		}
 	}
 
-	formatGeneratedSuggestion(text: string): { original: string; translated: string } {
+	public formatGeneratedSuggestion(text: string): { original: string; translated: string } {
 		const [original, translated] = text.split('|')
 		return {
 			original,

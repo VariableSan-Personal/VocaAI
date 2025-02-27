@@ -4,6 +4,7 @@
 </script>
 
 <template>
+	<!-- TODO: Add desktop adaptation for better user experience on larger screens -->
 	<div class="flex min-h-screen w-full flex-col">
 		<Header class="mb-2" />
 

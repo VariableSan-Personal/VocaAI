@@ -12,12 +12,13 @@ import { AbstractAIService } from './abstract'
 export class GeminiService extends AbstractAIService {
 	private TEMPERATURE_RANGE = 2.0
 	private TOP_P_RANGE = 1.0
+	private MODEL = 'gemini-2.0-flash-lite'
 
-	getName(): string {
+	public getName(): string {
 		return SERVICE_NAMES[AIServiceType.Gemini]
 	}
 
-	getConfigFields(): ConfigField[] {
+	public getConfigFields(): ConfigField[] {
 		return [
 			{
 				name: 'apiKey',
@@ -25,17 +26,10 @@ export class GeminiService extends AbstractAIService {
 				type: 'text',
 				required: true,
 			},
-			{
-				name: 'model',
-				label: 'Model',
-				type: 'select',
-				required: true,
-				options: [{ value: 'gemini-1.5-flash', label: 'Gemini 1.5 flash' }],
-			},
 		]
 	}
 
-	async generateSuggestion(word: string, examples?: string[]): Promise<string> {
+	public async generateSuggestion(word: string, examples?: string[]): Promise<string> {
 		const config = useRuntimeConfig()
 		const prompt = this.generatePrompt(word, examples)
 
@@ -52,7 +46,7 @@ export class GeminiService extends AbstractAIService {
 		}
 
 		const data = await useAIFetch<GeminiResponse>(
-			`${config.public.geminiUrl}/${this.config.model}:generateContent?key=${this.config.apiKey}`,
+			`${config.public.geminiUrl}/${this.MODEL}:generateContent?key=${this.config.apiKey}`,
 			{
 				method: 'POST',
 				body,
@@ -68,21 +62,25 @@ export class GeminiService extends AbstractAIService {
 		return text
 	}
 
-	extractText(data: GeminiResponse) {
+	private extractText(data: GeminiResponse): string {
 		return data.candidates?.[0]?.content?.parts?.[0]?.text
 	}
 
 	private generatePrompt(word: string, examples?: string[]): string {
-		const PROMPT = `
-      Find a unique and complex sentence in ${this.SOURCE_LANGUAGE} using the word "${word}" from real books.
-      Focus on using advanced grammatical structures, such as conditional phrases, participial constructions, or passive voice and so on. The response should be in the format: "${this.SOURCE_LANGUAGE} sentence|${this.TARGET_LANGUAGE} sentence", since i need to parse this text lately, so it's important text to be "sentence 1|sentence 2". Also, it should be in markdown format and make the main word **bold**. Don't use tables, but a simple text format.
-    `
+		const PROMPT = `Create a complex sentence using the word "${word}" in ${this.SOURCE_LANGUAGE}. The sentence should:
+      1. Come from authentic literature
+      2. Use advanced grammar (conditional phrases, participial constructions, or passive voice)
+      3. Follow this exact output format: "${this.SOURCE_LANGUAGE} sentence|${this.TARGET_LANGUAGE} translation"
+      4. Make the word "${word}" **bold** in both languages
+      5. Return plain text only (no tables)
+
+      Example format:
+      The intricate **mechanism** of the watch had been meticulously assembled by the master craftsman.|El intrincado **mecanismo** del reloj había sido ensamblado meticulosamente por el maestro artesano.
+
+      Important: Maintain the exact format with the pipe symbol (|) separating the two sentences, as this will be parsed programmatically.`
 
 		const EXAMPLE_AVOIDANCES = examples?.length
-			? `
-        Avoid structures similar to:
-        ${examples.map((example, index) => `${index + 1}. ${example}`).join('\n')}
-      `
+			? `Avoid structures similar to: ${examples.map((example, index) => `${index + 1}. ${example}`).join('\n')}`
 			: ''
 
 		return `${PROMPT}${EXAMPLE_AVOIDANCES}`

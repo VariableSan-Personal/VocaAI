@@ -8,7 +8,7 @@ export class AIServiceFactory {
 
 	private constructor() {}
 
-	static getInstance(): AIServiceFactory {
+	public static getInstance(): AIServiceFactory {
 		if (!AIServiceFactory.instance) {
 			AIServiceFactory.instance = new AIServiceFactory()
 		}
@@ -19,7 +19,7 @@ export class AIServiceFactory {
 	 * Creates and initializes a specific AI service instance based on the provided type and configuration.
 	 * @throws {AIServiceValidationError} If an unsupported service type is provided or if a required field is missing or a field value is out of range.
 	 */
-	createService(type: AIServiceType, config: AIServiceConfig): AbstractAIService {
+	public createService(type: AIServiceType, config: AIServiceConfig): AbstractAIService {
 		switch (type) {
 			case AIServiceType.Gemini:
 				this.currentService = new GeminiService(config)
@@ -28,14 +28,14 @@ export class AIServiceFactory {
 		return this.currentService
 	}
 
-	getServiceConfigFields(type: AIServiceType): ConfigField[] {
+	public getServiceConfigFields(type: AIServiceType): ConfigField[] {
 		switch (type) {
 			case AIServiceType.Gemini:
 				return new GeminiService({}, false).getConfigFields()
 		}
 	}
 
-	getCurrentService(): AbstractAIService | null {
+	public getCurrentService(): AbstractAIService | null {
 		return this.currentService
 	}
 }
