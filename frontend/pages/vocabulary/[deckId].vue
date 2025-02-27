@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 	import { StorageError, type CustomPageMeta } from '~/shared'
 
+	type ActionType = 'reset' | 'clear' | 'remove'
+
 	definePageMeta({
 		showBack: true,
 		hideBottomNav: true,
@@ -12,11 +14,18 @@
 	const cardStore = useCardStore()
 	const { showError } = useGlobalStore()
 
-	const categoryActions = [
+	const modal = reactive({
+		visibility: false,
+		mode: 'edit' as ActionType,
+		title: 'Confirmation',
+		subtitle: '',
+	})
+
+	const actionMenuItems = [
 		{
 			icon: 'uil:process',
 			title: 'Reset progress',
-			onClick: () => {},
+			onClick: () => showModal('reset'),
 		},
 		{
 			icon: 'uil:pen',
@@ -26,12 +35,12 @@
 		{
 			icon: 'uil:times',
 			title: 'Clear this category',
-			onClick: () => {},
+			onClick: () => showModal('clear'),
 		},
 		{
 			icon: 'uil:trash',
 			title: 'Remove this category',
-			onClick: () => {},
+			onClick: () => showModal('remove'),
 		},
 		{
 			type: 'separator',
@@ -78,6 +87,32 @@
 		}
 	}
 
+	const onConfirm = () => {
+		logger.info(`Confirmed, mode: ${modal.mode}`)
+	}
+
+	function showModal(actionType: ActionType) {
+		let subtitle = ''
+
+		switch (actionType) {
+			case 'clear':
+				subtitle =
+					'Are you sure you want to clear this category? All words and progress will be reset.'
+				break
+			case 'reset':
+				subtitle = 'Do you really want to reset your progress for this category?'
+				break
+			case 'remove':
+				subtitle =
+					'Are you sure you want to remove this category permanently? This action cannot be undone.'
+				break
+		}
+
+		modal.subtitle = subtitle
+		modal.mode = actionType
+		modal.visibility = true
+	}
+
 	watch(
 		() => [cardStore.initialized],
 		() => {
@@ -100,16 +135,18 @@
 		</ClientOnly>
 
 		<div class="container space-y-6">
+			{{ modal }}
+
 			<section>
 				<ul class="menu w-full gap-2 rounded-box">
-					<template v-for="(category, index) in categoryActions" :key="index">
-						<hr v-if="category.type === 'separator'" class="my-2" />
+					<template v-for="(item, index) in actionMenuItems" :key="index">
+						<hr v-if="item.type === 'separator'" class="my-2" />
 
 						<li v-else>
-							<button class="grid gap-4">
-								<Icon :name="category.icon!" size="20" class="col-span-1" />
-								<span class="col-span-9">{{ category.title }}</span>
-							</button>
+							<Button variant="ghost" class="flex justify-start" @click="item.onClick">
+								<Icon :name="item.icon!" size="20" />
+								<span>{{ item.title }}</span>
+							</Button>
 						</li>
 					</template>
 				</ul>
@@ -150,5 +187,7 @@
 			<Icon name="uil:plus" />
 			Word
 		</Button>
+
+		<ConfirmationModal v-model="modal.visibility" v-bind="modal" @confirm="onConfirm" />
 	</div>
 </template>
