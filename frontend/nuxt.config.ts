@@ -36,6 +36,18 @@ export default defineNuxtConfig({
 	alias: {
 		'@': fileURLToPath(new URL('./', import.meta.url)),
 	},
+
+	nitro: {
+		esbuild: {
+			options: {
+				target: 'esnext',
+			},
+		},
+		prerender: {
+			routes: ['/', '/learn', '/vocabulary', '/menu'],
+		},
+	},
+
 	pwa: {
 		registerType: 'autoUpdate',
 		injectRegister: 'auto',
@@ -138,10 +150,18 @@ export default defineNuxtConfig({
 			globPatterns: ['**/*.{js,css,html,svg,png,svg,ico}'],
 		},
 
+		client: {
+			installPrompt: true,
+			// you don't need to include this: only for testing purposes
+			// if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+			// periodicSyncForUpdates: 20,
+		},
+
 		devOptions: {
-			enabled: false,
-			navigateFallback: 'index.html',
+			enabled: true,
 			suppressWarnings: true,
+			navigateFallback: '/',
+			navigateFallbackAllowlist: [/^\/$/],
 			type: 'module',
 		},
 	},
