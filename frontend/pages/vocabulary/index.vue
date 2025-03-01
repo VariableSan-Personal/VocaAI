@@ -10,7 +10,7 @@
 	<div class="container">
 		<div class="card m-2 shadow-lg">
 			<ClientOnly>
-				<Teleport to="#headerContent">
+				<Teleport to="#header-right-content">
 					<Button
 						variant="link"
 						class="px-0 uppercase text-primary disabled:bg-transparent"

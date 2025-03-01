@@ -11,9 +11,10 @@
 			</Button>
 
 			<h1 v-if="$route.meta.title" class="text-xl">{{ $route.meta.title }}</h1>
-			<h1 id="headerTitle" class="text-xl"></h1>
+			<h1 id="header-custom-title" class="text-xl"></h1>
+			<div id="header-custom-content" class="text-xl"></div>
 		</div>
 
-		<div id="headerContent"></div>
+		<div id="header-right-content"></div>
 	</nav>
 </template>

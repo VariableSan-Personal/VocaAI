@@ -7,13 +7,7 @@ export interface Card extends FSRSCard {
 	back: string
 	created: number
 	modified: number
-	syncId?: string
 	deleted?: boolean
-}
-
-export interface SyncMetadata {
-	lastSynced: number
-	deviceId: string
 }
 
 export interface Deck {
@@ -22,6 +16,6 @@ export interface Deck {
 	created: number
 	modified: number
 	deleted?: boolean
-  icon: string
-  cardCount: number
+	icon: string
+	cardCount: number
 }

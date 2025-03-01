@@ -1,19 +1,21 @@
 <script lang="ts" setup>
 	import { z } from 'zod'
+	import type { Option } from '~/components/Select.vue'
 	import type { CustomPageMeta } from '~/shared'
 
 	type Schema = z.output<typeof schema>
 
-	// TODO: add option to choose a deck in header
 	definePageMeta({
 		showBack: true,
 		hideBottomNav: true,
-		title: 'Add new word',
 	} satisfies CustomPageMeta)
 
+	const route = useRoute()
+	const logger = useCustomLogger('vocabulary-add-word')
+
+	const cardStore = useCardStore()
 	const { getCurrentService } = useAIStore()
 	const { showError, showWarning } = useGlobalStore()
-	const logger = useCustomLogger('vocabulary-add-word')
 
 	const schema = z.object({
 		word: z.string().min(1, 'Word is required'),
@@ -33,8 +35,13 @@
 		translation: '',
 		examples: [],
 	})
-
 	const errors = ref<Record<string, string>>({})
+	const selectedDeck = ref<Option | null>(null)
+
+	const deckId = computed(() => (route.query.deckId as string) || undefined)
+	const decks = computed(() =>
+		cardStore.decks.map<Option>((deck) => ({ value: deck.id, label: deck.name }))
+	)
 
 	const addExample = () => {
 		form.examples.push({
@@ -94,10 +101,35 @@
 	const clearValidationErrors = () => {
 		errors.value = {}
 	}
+
+	const prepareWordInput = async () => {
+		if (deckId.value) {
+			try {
+				const deck = await cardStore.getDeck(deckId.value)
+				selectedDeck.value = {
+					value: deck.id,
+					label: deck.name,
+				}
+			} catch (error) {
+				showError('Failed to load deck information')
+				logger.error(error)
+			}
+		}
+	}
+
+	onMounted(() => {
+		prepareWordInput()
+	})
 </script>
 
 <template>
 	<div class="container">
+		<ClientOnly v-if="selectedDeck">
+			<Teleport to="#header-custom-content">
+				<Select v-model="selectedDeck" :options="decks" />
+			</Teleport>
+		</ClientOnly>
+
 		<section>
 			<form class="space-y-6" @submit.prevent="handleSubmit">
 				<div class="card space-y-4 bg-base-100 p-6 shadow-xl">

@@ -26,14 +26,24 @@ export const useCardStore = defineStore('cards', () => {
 	 * @throws {StorageError} When no deck exists with the provided ID
 	 */
 	async function loadCardsForDeck(deckId: string) {
+		const deck = await getDeck(deckId)
+
+		currentDeck.value = deck
+		cards.value = await storage.getCardsForDeck(deck.id)
+	}
+
+	/**
+	 * Gets information about a specific deck by its ID
+	 * @throws {StorageError} When no deck exists with the provided ID
+	 */
+	async function getDeck(deckId: string): Promise<Deck> {
 		const deck = await storage.getDeck(deckId)
 
 		if (!deck) {
 			throw new StorageError('There is no deck with this ID')
 		}
 
-		currentDeck.value = deck
-		cards.value = await storage.getCardsForDeck(deck.id)
+		return deck
 	}
 
 	async function addDeck(name: string, icon: string) {
@@ -120,5 +130,6 @@ export const useCardStore = defineStore('cards', () => {
 		addCard,
 		reviewCard,
 		clearDatabase,
+		getDeck,
 	}
 })
