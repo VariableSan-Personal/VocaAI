@@ -154,17 +154,16 @@
 				</div>
 
 				<ul v-if="cardStore.cards.length" class="menu space-y-2 rounded-xl bg-neutral">
+					<!-- TODO: when clicking on a word, it must be forwarded for editing. -->
 					<li v-for="(word, index) in cardStore.cards" :key="index">
 						<div class="relative flex flex-col items-start gap-y-0 py-2">
 							<div class="absolute left-0 top-[10%] h-4/5 w-1 bg-secondary"></div>
-							<p class="text-sm text-secondary">
-								{{ word.state }}
-							</p>
+							<p class="text-sm text-secondary">State: {{ word.state }}</p>
 							<h6 class="text-base">
-								{{ word.front }}
+								{{ word.word }}
 							</h6>
 							<p>
-								{{ word.back }}
+								{{ word.translation }}
 							</p>
 
 							<!-- TODO: Add a button to play audio pronunciation of the word -->

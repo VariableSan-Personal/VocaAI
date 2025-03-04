@@ -43,7 +43,6 @@
 						<Icon :name="item.icon" class="col-span-1" />
 						<div class="col-span-9 flex flex-col">
 							<span>{{ item.name }}</span>
-							<span v-if="item.cardCount">{{ item.cardCount }} words</span>
 						</div>
 					</NuxtLink>
 				</li>

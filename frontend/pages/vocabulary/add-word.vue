@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 	import { z } from 'zod'
 	import type { Option } from '~/components/Select.vue'
-	import type { CustomPageMeta, Deck } from '~/shared'
+	import type { BaseCard, CustomPageMeta, Deck } from '~/shared'
 
 	type Schema = z.output<typeof schema>
 
@@ -11,11 +11,12 @@
 	} satisfies CustomPageMeta)
 
 	const route = useRoute()
+	const router = useRouter()
 	const logger = useCustomLogger('vocabulary-add-word')
 
 	const cardStore = useCardStore()
 	const { getCurrentService } = useAIStore()
-	const { showError, showWarning } = useGlobalStore()
+	const { showError, showWarning, showSuccess } = useGlobalStore()
 
 	const schema = z.object({
 		word: z.string().min(1, 'Word is required'),
@@ -82,18 +83,28 @@
 		}
 	}
 
+	const addCard = (card: BaseCard, deckId: string) => {
+		cardStore.addCard(card, deckId)
+		showSuccess(`Card "${card.word}" has been added to the deck`)
+		router.back()
+	}
+
 	const handleSubmit = async () => {
 		clearValidationErrors()
 
 		try {
 			const validatedData = schema.parse(form)
-			logger.info(`Form submitted: ${validatedData}`)
-		} catch (err) {
-			if (err instanceof z.ZodError) {
-				err.errors.forEach((error) => {
+			if (selectedDeck.value?.value) {
+				addCard(validatedData, selectedDeck.value.value)
+			}
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				error.errors.forEach((error) => {
 					const path = error.path.join('.')
 					errors.value[path] = error.message
 				})
+			} else {
+				logger.error(error)
 			}
 		}
 	}
@@ -105,13 +116,14 @@
 	const prepareWordInput = async () => {
 		let deck: Deck | undefined
 
-		try {
-			if (deckId.value) {
+		if (deckId.value) {
+			try {
 				deck = await cardStore.getDeck(deckId.value)
+			} catch (error) {
+				showError('Failed to load deck information')
+				logger.error(error)
 			}
-		} catch (error) {
-			showError('Failed to load deck information')
-			logger.error(error)
+		} else {
 			deck = cardStore.decks.at(0)
 		}
 
