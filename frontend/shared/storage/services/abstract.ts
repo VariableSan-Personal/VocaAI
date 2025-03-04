@@ -1,5 +1,6 @@
 import type { Card, Deck } from '../lib/types'
 
+// TODO: remove unnecessary methods
 export interface StorageService {
 	clearDatabase(): Promise<void>
 

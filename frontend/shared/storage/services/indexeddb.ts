@@ -70,7 +70,6 @@ export class IndexedDBStorage implements StorageService {
 			...card,
 			modified: Date.now(),
 		})
-		await this.updateDeckCardCount(card.deckId)
 	}
 
 	async deleteCard(id: string): Promise<void> {
@@ -78,7 +77,6 @@ export class IndexedDBStorage implements StorageService {
 		if (!card) return
 
 		await this.db?.delete(this.CARDS_STORE, id)
-		await this.updateDeckCardCount(card.deckId)
 	}
 
 	async clearDatabase(): Promise<void> {
@@ -100,32 +98,5 @@ export class IndexedDBStorage implements StorageService {
 		const index = tx?.store.index('modified')
 
 		return index?.getAll(IDBKeyRange.lowerBound(timestamp)) || []
-	}
-
-	async updateDeckCardCount(deckId: string): Promise<void> {
-		const deck = await this.getDeck(deckId)
-		if (!deck) return
-
-		const cards = await this.getCardsForDeck(deckId)
-		const activeCards = cards.filter((card) => !card.deleted).length
-
-		await this.saveDeck({
-			...deck,
-			cardCount: activeCards,
-		})
-	}
-
-	async addDeck(name: string, icon: string): Promise<Deck> {
-		const deck: Deck = {
-			id: crypto.randomUUID(),
-			name,
-			icon,
-			created: Date.now(),
-			modified: Date.now(),
-			cardCount: 0,
-		}
-
-		await this.saveDeck(deck)
-		return deck
 	}
 }

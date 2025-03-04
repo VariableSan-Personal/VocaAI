@@ -1,19 +1,18 @@
 import type { Card as FSRSCard } from 'ts-fsrs'
 
-export interface Card extends FSRSCard {
-	id: string
-	deckId: string
-	front: string
-	back: string
-	created: number
-	modified: number
-	syncId?: string
-	deleted?: boolean
+export interface BaseCard {
+	word: string
+	translation: string
+	transcription?: string
+	examples: Array<{ text: string; translation: string }>
 }
 
-export interface SyncMetadata {
-	lastSynced: number
-	deviceId: string
+export interface Card extends BaseCard, FSRSCard {
+	id: string
+	deckId: string
+	created: number
+	modified: number
+	deleted?: boolean
 }
 
 export interface Deck {
@@ -22,6 +21,5 @@ export interface Deck {
 	created: number
 	modified: number
 	deleted?: boolean
-  icon: string
-  cardCount: number
+	icon: string
 }

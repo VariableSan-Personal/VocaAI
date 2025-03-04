@@ -70,6 +70,7 @@ export default defineNuxtConfig({
 					type: 'image/png',
 				},
 			],
+      // TODO: Update screenshots of application
 			screenshots: [
 				{
 					src: '/screenshots/desktop.png',
@@ -158,7 +159,7 @@ export default defineNuxtConfig({
 		},
 
 		devOptions: {
-			enabled: true,
+			enabled: false,
 			suppressWarnings: true,
 			navigateFallback: '/',
 			navigateFallbackAllowlist: [/^\/$/],

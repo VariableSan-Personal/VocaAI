@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Grade } from 'ts-fsrs'
 import { createEmptyCard, FSRS, generatorParameters } from 'ts-fsrs'
-import { FSRS_PARAMETERS, StorageError, type Card, type Deck } from '~/shared'
+import { FSRS_PARAMETERS, StorageError, type BaseCard, type Card, type Deck } from '~/shared'
 import { IndexedDBStorage } from '~/shared/storage/services/indexeddb'
 
 export const useCardStore = defineStore('cards', () => {
@@ -18,7 +18,8 @@ export const useCardStore = defineStore('cards', () => {
 	const initialized = ref(false)
 
 	async function loadDecks() {
-		decks.value = await storage.getDecks()
+		const res = await storage.getDecks()
+		decks.value = res
 	}
 
 	/**
@@ -26,37 +27,47 @@ export const useCardStore = defineStore('cards', () => {
 	 * @throws {StorageError} When no deck exists with the provided ID
 	 */
 	async function loadCardsForDeck(deckId: string) {
+		const deck = await getDeck(deckId)
+
+		currentDeck.value = deck
+		cards.value = await storage.getCardsForDeck(deck.id)
+	}
+
+	/**
+	 * Gets information about a specific deck by its ID
+	 * @throws {StorageError} When no deck exists with the provided ID
+	 */
+	async function getDeck(deckId: string): Promise<Deck> {
 		const deck = await storage.getDeck(deckId)
 
 		if (!deck) {
 			throw new StorageError('There is no deck with this ID')
 		}
 
-		currentDeck.value = deck
-		cards.value = await storage.getCardsForDeck(deck.id)
+		return deck
 	}
 
 	async function addDeck(name: string, icon: string) {
-		const deck = await storage.addDeck(name, icon)
+		const date = new Date()
+		const deck: Deck = {
+			id: crypto.randomUUID(),
+			name,
+			icon,
+			created: date.getTime(),
+			modified: date.getTime(),
+		}
+
+		await storage.saveDeck(deck)
 		decks.value.push(deck)
 	}
 
-	/**
-	 * Adds a new card to the current deck.
-	 * @throws {StorageError} If no deck is currently selected
-	 */
-	async function addCard(front: string, back: string) {
-		if (!currentDeck.value) {
-			throw new StorageError('No deck selected')
-		}
-
+	async function addCard(newCard: BaseCard, deckId: string) {
 		const date = new Date()
 		const card: Card = {
 			...createEmptyCard(),
+			...newCard,
 			id: crypto.randomUUID(),
-			deckId: currentDeck.value.id,
-			front,
-			back,
+			deckId,
 			created: date.getTime(),
 			modified: date.getTime(),
 		}
@@ -120,5 +131,6 @@ export const useCardStore = defineStore('cards', () => {
 		addCard,
 		reviewCard,
 		clearDatabase,
+		getDeck,
 	}
 })

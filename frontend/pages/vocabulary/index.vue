@@ -10,7 +10,7 @@
 	<div class="container">
 		<div class="card m-2 shadow-lg">
 			<ClientOnly>
-				<Teleport to="#headerContent">
+				<Teleport to="#header-right-content">
 					<Button
 						variant="link"
 						class="px-0 uppercase text-primary disabled:bg-transparent"
@@ -43,7 +43,6 @@
 						<Icon :name="item.icon" class="col-span-1" />
 						<div class="col-span-9 flex flex-col">
 							<span>{{ item.name }}</span>
-							<span v-if="item.cardCount">{{ item.cardCount }} words</span>
 						</div>
 					</NuxtLink>
 				</li>

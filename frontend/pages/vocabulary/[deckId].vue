@@ -57,27 +57,11 @@
 		},
 	]
 
-	const wordList = [
-		{
-			status: 'New',
-			source: 'addendum',
-			target: 'добавление, дополнение',
-		},
-		{
-			status: 'New',
-			source: 'ado',
-			target: 'суматоха',
-		},
-		{
-			status: 'New',
-			source: 'adversary',
-			target: 'противник',
-		},
-	]
+	const deckId = computed(() => route.params.deckId as string)
 
 	const loadCards = async () => {
 		try {
-			await cardStore.loadCardsForDeck(route.params.deckId as string)
+			await cardStore.loadCardsForDeck(deckId.value)
 		} catch (error) {
 			if (error instanceof StorageError) {
 				showError(error.message)
@@ -113,10 +97,19 @@
 		modal.visibility = true
 	}
 
+	const addWord = () => {
+		router.push({
+			name: 'vocabulary-add-word',
+			query: {
+				deckId: deckId.value,
+			},
+		})
+	}
+
 	watch(
-		() => [cardStore.initialized],
-		() => {
-			if (cardStore.initialized) {
+		() => cardStore.initialized,
+		(val) => {
+			if (val) {
 				loadCards()
 			}
 		},
@@ -129,14 +122,12 @@
 <template>
 	<div>
 		<ClientOnly>
-			<Teleport to="#headerTitle">
+			<Teleport to="#header-custom-title">
 				{{ cardStore.currentDeck?.name }}
 			</Teleport>
 		</ClientOnly>
 
 		<div class="container space-y-6">
-			{{ modal }}
-
 			<section>
 				<ul class="menu w-full gap-2 rounded-box">
 					<template v-for="(item, index) in actionMenuItems" :key="index">
@@ -154,7 +145,7 @@
 
 			<section>
 				<div class="mx-4 mb-2 flex items-center justify-between">
-					<h2 class="text-base text-secondary">Words</h2>
+					<h2 class="text-base text-secondary">Words: {{ cardStore.cards.length }}</h2>
 
 					<Button disabled variant="link" class="flex items-center gap-2 text-primary no-underline">
 						<span class="text-base">By status</span>
@@ -162,18 +153,17 @@
 					</Button>
 				</div>
 
-				<ul class="menu space-y-2 rounded-xl bg-neutral">
-					<li v-for="(word, index) in wordList" :key="index">
+				<ul v-if="cardStore.cards.length" class="menu space-y-2 rounded-xl bg-neutral">
+					<!-- TODO: when clicking on a word, it must be forwarded for editing. -->
+					<li v-for="(word, index) in cardStore.cards" :key="index">
 						<div class="relative flex flex-col items-start gap-y-0 py-2">
 							<div class="absolute left-0 top-[10%] h-4/5 w-1 bg-secondary"></div>
-							<p class="text-sm text-secondary">
-								{{ word.status }}
-							</p>
+							<p class="text-sm text-secondary">State: {{ word.state }}</p>
 							<h6 class="text-base">
-								{{ word.source }}
+								{{ word.word }}
 							</h6>
 							<p>
-								{{ word.target }}
+								{{ word.translation }}
 							</p>
 
 							<!-- TODO: Add a button to play audio pronunciation of the word -->
@@ -183,7 +173,11 @@
 			</section>
 		</div>
 
-		<Button variant="primary" class="fixed bottom-6 right-1/2 !translate-x-1/2 rounded-xl" disabled>
+		<Button
+			variant="primary"
+			class="fixed bottom-6 right-1/2 !translate-x-1/2 rounded-xl"
+			@click="addWord"
+		>
 			<Icon name="uil:plus" />
 			Word
 		</Button>

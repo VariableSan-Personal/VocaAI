@@ -1,19 +1,22 @@
 <script lang="ts" setup>
 	import { z } from 'zod'
-	import type { CustomPageMeta } from '~/shared'
+	import type { Option } from '~/components/Select.vue'
+	import type { BaseCard, CustomPageMeta, Deck } from '~/shared'
 
 	type Schema = z.output<typeof schema>
 
-	// TODO: add option to choose a deck in header
 	definePageMeta({
 		showBack: true,
 		hideBottomNav: true,
-		title: 'Add new word',
 	} satisfies CustomPageMeta)
 
-	const { getCurrentService } = useAIStore()
-	const { showError, showWarning } = useGlobalStore()
+	const route = useRoute()
+	const router = useRouter()
 	const logger = useCustomLogger('vocabulary-add-word')
+
+	const cardStore = useCardStore()
+	const { getCurrentService } = useAIStore()
+	const { showError, showWarning, showSuccess } = useGlobalStore()
 
 	const schema = z.object({
 		word: z.string().min(1, 'Word is required'),
@@ -33,8 +36,13 @@
 		translation: '',
 		examples: [],
 	})
-
 	const errors = ref<Record<string, string>>({})
+	const selectedDeck = ref<Option | null>(null)
+
+	const deckId = computed(() => (route.query.deckId as string) || undefined)
+	const decks = computed(() =>
+		cardStore.decks.map<Option>((deck) => ({ value: deck.id, label: deck.name }))
+	)
 
 	const addExample = () => {
 		form.examples.push({
@@ -75,18 +83,28 @@
 		}
 	}
 
+	const addCard = (card: BaseCard, deckId: string) => {
+		cardStore.addCard(card, deckId)
+		showSuccess(`Card "${card.word}" has been added to the deck`)
+		router.back()
+	}
+
 	const handleSubmit = async () => {
 		clearValidationErrors()
 
 		try {
 			const validatedData = schema.parse(form)
-			logger.info(`Form submitted: ${validatedData}`)
-		} catch (err) {
-			if (err instanceof z.ZodError) {
-				err.errors.forEach((error) => {
+			if (selectedDeck.value?.value) {
+				addCard(validatedData, selectedDeck.value.value)
+			}
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				error.errors.forEach((error) => {
 					const path = error.path.join('.')
 					errors.value[path] = error.message
 				})
+			} else {
+				logger.error(error)
 			}
 		}
 	}
@@ -94,10 +112,50 @@
 	const clearValidationErrors = () => {
 		errors.value = {}
 	}
+
+	const prepareWordInput = async () => {
+		let deck: Deck | undefined
+
+		if (deckId.value) {
+			try {
+				deck = await cardStore.getDeck(deckId.value)
+			} catch (error) {
+				showError('Failed to load deck information')
+				logger.error(error)
+			}
+		} else {
+			deck = cardStore.decks.at(0)
+		}
+
+		if (deck) {
+			selectedDeck.value = {
+				value: deck.id,
+				label: deck.name,
+			}
+		}
+	}
+
+	watch(
+		() => cardStore.initialized,
+		(val) => {
+			if (val) {
+				prepareWordInput()
+			}
+		},
+		{
+			immediate: true,
+		}
+	)
 </script>
 
 <template>
 	<div class="container">
+		<ClientOnly v-if="selectedDeck">
+			<Teleport to="#header-custom-content">
+				<Select v-model="selectedDeck" :options="decks" />
+			</Teleport>
+		</ClientOnly>
+
 		<section>
 			<form class="space-y-6" @submit.prevent="handleSubmit">
 				<div class="card space-y-4 bg-base-100 p-6 shadow-xl">

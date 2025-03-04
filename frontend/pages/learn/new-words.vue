@@ -12,6 +12,7 @@
 	} satisfies CustomPageMeta)
 
 	const cardStore = useCardStore()
+	const logger = useCustomLogger('learn-new-word')
 
 	const schema = z.object({
 		front: z.string().min(1, 'Word is required'),
@@ -37,7 +38,7 @@
 
 		try {
 			const { front, back } = schema.parse(form)
-			await cardStore.addCard(front, back)
+			logger.info(front + ' ' + back)
 		} catch (err) {
 			if (err instanceof z.ZodError) {
 				err.errors.forEach((error) => {
@@ -89,11 +90,11 @@
 				<div v-for="card in dueCards" :key="card.id" class="card shadow-xl">
 					<div class="card-body items-center text-center">
 						<h2 class="card-title">
-							{{ card.front }}
+							{{ card.word }}
 						</h2>
 
 						<p>
-							{{ card.back }}
+							{{ card.translation }}
 						</p>
 
 						<div class="flex gap-2">
