@@ -18,7 +18,8 @@ export const useCardStore = defineStore('cards', () => {
 	const initialized = ref(false)
 
 	async function loadDecks() {
-		decks.value = await storage.getDecks()
+		const res = await storage.getDecks()
+		decks.value = res
 	}
 
 	/**

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 	import { z } from 'zod'
 	import type { Option } from '~/components/Select.vue'
-	import type { CustomPageMeta } from '~/shared'
+	import type { CustomPageMeta, Deck } from '~/shared'
 
 	type Schema = z.output<typeof schema>
 
@@ -103,23 +103,37 @@
 	}
 
 	const prepareWordInput = async () => {
-		if (deckId.value) {
-			try {
-				const deck = await cardStore.getDeck(deckId.value)
-				selectedDeck.value = {
-					value: deck.id,
-					label: deck.name,
-				}
-			} catch (error) {
-				showError('Failed to load deck information')
-				logger.error(error)
+		let deck: Deck | undefined
+
+		try {
+			if (deckId.value) {
+				deck = await cardStore.getDeck(deckId.value)
+			}
+		} catch (error) {
+			showError('Failed to load deck information')
+			logger.error(error)
+			deck = cardStore.decks.at(0)
+		}
+
+		if (deck) {
+			selectedDeck.value = {
+				value: deck.id,
+				label: deck.name,
 			}
 		}
 	}
 
-	onMounted(() => {
-		prepareWordInput()
-	})
+	watch(
+		() => cardStore.initialized,
+		(val) => {
+			if (val) {
+				prepareWordInput()
+			}
+		},
+		{
+			immediate: true,
+		}
+	)
 </script>
 
 <template>
