@@ -3,6 +3,7 @@ import type { Card, Deck } from '../lib/types'
 // TODO: remove unnecessary methods
 export interface StorageService {
 	clearDatabase(): Promise<void>
+  init(): Promise<void>
 
 	getCard(id: string): Promise<Card | null>
 	getCards(): Promise<Card[]>
@@ -17,4 +18,5 @@ export interface StorageService {
 	deleteDeck(id: string): Promise<void>
 	getCardsForDeck(deckId: string): Promise<Card[]>
 	getDueCardsForDeck(deckId: string, limit?: number): Promise<Card[]>
+	clearDeckCards(deckId: string): Promise<void>
 }

@@ -8,7 +8,7 @@ export class IndexedDBStorage implements StorageService {
 	private CARDS_STORE = 'cards'
 	private DECKS_STORE = 'decks'
 
-	async init() {
+	async init(): Promise<void> {
 		this.db = await openDB(this.DB_NAME, 1, {
 			upgrade(db) {
 				const cardsStore = db.createObjectStore('cards', { keyPath: 'id' })
@@ -45,7 +45,7 @@ export class IndexedDBStorage implements StorageService {
 	async getCardsForDeck(deckId: string): Promise<Card[]> {
 		const tx = this.db?.transaction(this.CARDS_STORE, 'readonly')
 		const index = tx?.store.index('deckId')
-		const cards = (await index?.getAll(deckId)) || []
+		const cards: Card[] = (await index?.getAll(deckId)) || []
 		return cards.filter((card) => !card.deleted)
 	}
 
@@ -98,5 +98,22 @@ export class IndexedDBStorage implements StorageService {
 		const index = tx?.store.index('modified')
 
 		return index?.getAll(IDBKeyRange.lowerBound(timestamp)) || []
+	}
+
+	async clearDeckCards(deckId: string): Promise<void> {
+		const cards = await this.getCardsForDeck(deckId)
+
+		if (!cards.length) return
+
+		const tx = this.db?.transaction(this.CARDS_STORE, 'readwrite')
+		const store = tx?.store
+
+		if (!store) return
+
+		for (const card of cards) {
+			await store.delete(card.id)
+		}
+
+		await tx?.done
 	}
 }

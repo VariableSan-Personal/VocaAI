@@ -71,8 +71,25 @@
 		}
 	}
 
+	const closeModal = () => {
+		modal.subtitle = ''
+		modal.visibility = false
+	}
+
+	const clearDeckCards = async () => {
+		await cardStore.clearDeckCards(deckId.value)
+		loadCards()
+	}
+
 	const onConfirm = () => {
+		switch (modal.mode) {
+			case 'clear':
+				clearDeckCards()
+				break
+		}
+
 		logger.info(`Confirmed, mode: ${modal.mode}`)
+		closeModal()
 	}
 
 	function showModal(actionType: ActionType) {
@@ -122,7 +139,7 @@
 <template>
 	<div>
 		<ClientOnly>
-			<Teleport to="#header-custom-title">
+			<Teleport :key="deckId" to="#header-custom-title">
 				{{ cardStore.currentDeck?.name }}
 			</Teleport>
 		</ClientOnly>
