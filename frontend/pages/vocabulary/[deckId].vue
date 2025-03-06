@@ -170,7 +170,7 @@
 					</Button>
 				</div>
 
-				<ul v-if="cardStore.cards.length" class="menu space-y-2 rounded-xl bg-neutral">
+				<ul v-if="cardStore.cards.length" class="menu space-y-2 rounded-xl bg-base-200">
 					<!-- TODO: when clicking on a word, it must be forwarded for editing. -->
 					<li v-for="(word, index) in cardStore.cards" :key="index">
 						<div class="relative flex flex-col items-start gap-y-0 py-2">
