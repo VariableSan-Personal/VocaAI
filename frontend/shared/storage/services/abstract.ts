@@ -1,22 +1,17 @@
 import type { Card, Deck } from '../lib/types'
 
-// TODO: remove unnecessary methods
-export interface StorageService {
-	clearDatabase(): Promise<void>
-  init(): Promise<void>
+export abstract class AbstractStorageService {
+	abstract init(): Promise<void>
+	abstract clearDatabase(): Promise<void>
 
-	getCard(id: string): Promise<Card | null>
-	getCards(): Promise<Card[]>
-	saveCard(card: Card): Promise<void>
-	deleteCard(id: string): Promise<void>
-	getDueCards(limit?: number): Promise<Card[]>
-	getModifiedSince(timestamp: number): Promise<Card[]>
+	abstract getCard(id: string): Promise<Card | null>
+	abstract getCards(): Promise<Card[]>
+	abstract saveCard(card: Card): Promise<void>
 
-	getDeck(id: string): Promise<Deck | null>
-	getDecks(): Promise<Deck[]>
-	saveDeck(deck: Deck): Promise<void>
-	deleteDeck(id: string): Promise<void>
-	getCardsForDeck(deckId: string): Promise<Card[]>
-	getDueCardsForDeck(deckId: string, limit?: number): Promise<Card[]>
-	clearDeckCards(deckId: string): Promise<void>
+	abstract getDeck(id: string): Promise<Deck | null>
+	abstract getDecks(): Promise<Deck[]>
+	abstract saveDeck(deck: Deck): Promise<void>
+
+	abstract getCardsForDeck(deckId: string): Promise<Card[]>
+	abstract clearDeckCards(deckId: string): Promise<void>
 }
