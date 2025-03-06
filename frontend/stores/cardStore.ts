@@ -115,6 +115,10 @@ export const useCardStore = defineStore('cards', () => {
 		}
 	}
 
+	async function clearDeckCards(deckId: string) {
+    await storage.clearDeckCards(deckId)
+  }
+
 	onMounted(() => {
 		init()
 	})
@@ -132,5 +136,6 @@ export const useCardStore = defineStore('cards', () => {
 		reviewCard,
 		clearDatabase,
 		getDeck,
+		clearDeckCards,
 	}
 })

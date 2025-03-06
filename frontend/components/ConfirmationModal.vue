@@ -3,7 +3,7 @@
 		title?: string
 		subtitle?: string
 	}>()
-	defineEmits(['confirm'])
+	defineEmits(['confirm', 'cancel'])
 
 	const modelValue = defineModel<boolean>()
 
@@ -55,7 +55,7 @@
 			</div>
 
 			<div class="modal-action">
-				<form method="dialog" class="space-x-2">
+				<form method="dialog" class="space-x-2" @submit="$emit('cancel')">
 					<Button variant="ghost" type="submit" class="uppercase">Cancel</Button>
 					<Button variant="ghost" type="button" class="uppercase" @click="$emit('confirm')">
 						Ok

@@ -1,2 +1,2 @@
 export * from './lib'
-export type { StorageService } from './services/abstract'
+export type { AbstractStorageService as StorageService } from './services/abstract'

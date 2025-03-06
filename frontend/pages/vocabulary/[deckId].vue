@@ -71,8 +71,25 @@
 		}
 	}
 
+	const closeModal = () => {
+		modal.subtitle = ''
+		modal.visibility = false
+	}
+
+	const clearDeckCards = async () => {
+		await cardStore.clearDeckCards(deckId.value)
+		loadCards()
+	}
+
 	const onConfirm = () => {
+		switch (modal.mode) {
+			case 'clear':
+				clearDeckCards()
+				break
+		}
+
 		logger.info(`Confirmed, mode: ${modal.mode}`)
+		closeModal()
 	}
 
 	function showModal(actionType: ActionType) {
@@ -122,7 +139,7 @@
 <template>
 	<div>
 		<ClientOnly>
-			<Teleport to="#header-custom-title">
+			<Teleport :key="deckId" to="#header-custom-title">
 				{{ cardStore.currentDeck?.name }}
 			</Teleport>
 		</ClientOnly>
@@ -153,7 +170,7 @@
 					</Button>
 				</div>
 
-				<ul v-if="cardStore.cards.length" class="menu space-y-2 rounded-xl bg-neutral">
+				<ul v-if="cardStore.cards.length" class="menu space-y-2 rounded-xl bg-base-200">
 					<!-- TODO: when clicking on a word, it must be forwarded for editing. -->
 					<li v-for="(word, index) in cardStore.cards" :key="index">
 						<div class="relative flex flex-col items-start gap-y-0 py-2">
