@@ -9,22 +9,26 @@ import { useCustomLogger } from '~/composables/useCustomLogger'
 
 export const useAIStore = defineStore('ai', () => {
 	const logger = useCustomLogger('useAIStore')
-
 	const { showError } = useGlobalStore()
 
 	const currentServiceType = ref<AIServiceType>()
-	const factory = AIServiceFactory.getInstance()
+	const aiFactoryInstance = AIServiceFactory.getInstance()
 	const config = ref<AIServiceConfig | null>(null)
+
 	const initialized = ref(false)
+	const loading = ref(false)
 
 	const setupAIService = (type: AIServiceType, serviceConfig: AIServiceConfig) => {
+		loading.value = true
 		try {
-			factory.createService(type, serviceConfig)
+			aiFactoryInstance.createService(type, serviceConfig)
 		} catch (error) {
 			if (error instanceof AIServiceValidationError) {
 				showError(error.message)
 			}
 			throw error
+		} finally {
+			loading.value = false
 		}
 
 		currentServiceType.value = type
@@ -35,14 +39,18 @@ export const useAIStore = defineStore('ai', () => {
 	}
 
 	const getCurrentService = () => {
-		return factory.getCurrentService()
+		return aiFactoryInstance.getCurrentService()
 	}
 
 	const getConfigFieldsByServiceName = (serviceName?: AIServiceType) => {
 		if (serviceName) {
-			return factory.getServiceConfigFields(serviceName)
+			return aiFactoryInstance.getServiceConfigFields(serviceName)
 		}
 		return []
+	}
+
+	const initializeAIStore = () => {
+		initialized.value = true
 	}
 
 	const loadSavedAIConfiguration = () => {
@@ -55,6 +63,7 @@ export const useAIStore = defineStore('ai', () => {
 
 		try {
 			setupAIService(savedType as AIServiceType, JSON.parse(savedConfig))
+			initializeAIStore()
 		} catch {
 			logger.error('Failed to load saved AI configuration')
 		}
@@ -62,14 +71,13 @@ export const useAIStore = defineStore('ai', () => {
 
 	onMounted(() => {
 		loadSavedAIConfiguration()
-		initialized.value = true
 	})
 
 	return {
 		currentServiceType,
-		factory,
 		config,
 		initialized,
+		loading,
 		setupAIService,
 		getCurrentService,
 		getConfigFieldsByServiceName,

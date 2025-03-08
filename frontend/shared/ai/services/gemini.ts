@@ -2,7 +2,7 @@ import { useAIFetch } from '~/composables/useAIFetch'
 import {
 	AIServiceError,
 	AIServiceType,
-	SERVICE_NAMES,
+	AI_SERVICE_NAMES,
 	type ConfigField,
 	type GeminiRequestBody,
 	type GeminiResponse,
@@ -15,7 +15,7 @@ export class GeminiService extends AbstractAIService {
 	private MODEL = 'gemini-2.0-flash-lite'
 
 	public getName(): string {
-		return SERVICE_NAMES[AIServiceType.Gemini]
+		return AI_SERVICE_NAMES[AIServiceType.Gemini]
 	}
 
 	public getConfigFields(): ConfigField[] {

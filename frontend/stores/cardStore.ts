@@ -1,32 +1,48 @@
 import { defineStore } from 'pinia'
 import type { Grade } from 'ts-fsrs'
 import { createEmptyCard, FSRS, generatorParameters } from 'ts-fsrs'
-import { FSRS_PARAMETERS, StorageError, type BaseCard, type Card, type Deck } from '~/shared'
-import { IndexedDBStorage } from '~/shared/storage/services/indexeddb'
+import {
+	FSRS_PARAMETERS,
+	LocalStorageKeys,
+	StorageError,
+	StorageServiceFactory,
+	StorageServiceType,
+	type BaseCard,
+	type Card,
+	type Deck,
+} from '~/shared'
+
+const DEFAULT_STORAGE = StorageServiceType.IndexedDB
 
 export const useCardStore = defineStore('cards', () => {
 	const logger = useCustomLogger('useCardStore')
 
-	// TODO: Allow the user to select storage
-	const storage = new IndexedDBStorage()
+	const storageFactoryInstance = StorageServiceFactory.getInstance()
 	const fsrs = new FSRS(generatorParameters(FSRS_PARAMETERS))
+	const currentServiceType = ref<StorageServiceType>()
+	let storage = storageFactoryInstance.createService(StorageServiceType.IndexedDB)
+
+	const loading = ref(false)
+	const initialized = ref(false)
 
 	const cards = ref<Card[]>([])
 	const decks = ref<Deck[]>([])
 	const currentDeck = ref<Deck | null>(null)
-	const loading = ref(false)
-	const initialized = ref(false)
 
-	async function loadDecks() {
+	const loadDecks = async () => {
 		const res = await storage.getDecks()
 		decks.value = res
+	}
+
+	const getCurrentService = () => {
+		return storageFactoryInstance.getCurrentService()
 	}
 
 	/**
 	 * Loads cards for a specific deck and sets it as the current deck.
 	 * @throws {StorageError} When no deck exists with the provided ID
 	 */
-	async function loadCardsForDeck(deckId: string) {
+	const loadCardsForDeck = async (deckId: string) => {
 		const deck = await getDeck(deckId)
 
 		currentDeck.value = deck
@@ -37,7 +53,7 @@ export const useCardStore = defineStore('cards', () => {
 	 * Gets information about a specific deck by its ID
 	 * @throws {StorageError} When no deck exists with the provided ID
 	 */
-	async function getDeck(deckId: string): Promise<Deck> {
+	const getDeck = async (deckId: string) => {
 		const deck = await storage.getDeck(deckId)
 
 		if (!deck) {
@@ -47,7 +63,7 @@ export const useCardStore = defineStore('cards', () => {
 		return deck
 	}
 
-	async function addDeck(name: string, icon: string) {
+	const addDeck = async (name: string, icon: string) => {
 		const date = new Date()
 		const deck: Deck = {
 			id: crypto.randomUUID(),
@@ -61,7 +77,7 @@ export const useCardStore = defineStore('cards', () => {
 		decks.value.push(deck)
 	}
 
-	async function addCard(newCard: BaseCard, deckId: string) {
+	const addCard = async (newCard: BaseCard, deckId: string) => {
 		const date = new Date()
 		const card: Card = {
 			...createEmptyCard(),
@@ -76,7 +92,7 @@ export const useCardStore = defineStore('cards', () => {
 		cards.value.push(card)
 	}
 
-	async function reviewCard(cardId: string, grade: Grade) {
+	const reviewCard = async (cardId: string, grade: Grade) => {
 		// TODO: optimize this
 		const card = cards.value.find((c) => c.id === cardId)
 		if (!card) return
@@ -93,7 +109,7 @@ export const useCardStore = defineStore('cards', () => {
 		Object.assign(card, updatedCard)
 	}
 
-	async function clearDatabase() {
+	const clearDatabase = async () => {
 		try {
 			await storage.clearDatabase()
 			cards.value = []
@@ -102,25 +118,49 @@ export const useCardStore = defineStore('cards', () => {
 		}
 	}
 
-	async function init() {
+	const setupStorageService = async (type: StorageServiceType) => {
 		loading.value = true
 		try {
+			storage = storageFactoryInstance.createService(type)
+			currentServiceType.value = type
+			localStorage.setItem(LocalStorageKeys.SelectedStorageService, type)
+
 			await storage.init()
 			await loadDecks()
-			initialized.value = true
-		} catch (e) {
-			logger.error(e)
+		} catch (error) {
+			logger.error(error)
 		} finally {
-			loading.value = false
+			loading.value = true
 		}
 	}
 
-	async function clearDeckCards(deckId: string) {
-    await storage.clearDeckCards(deckId)
-  }
+	const clearDeckCards = async (deckId: string) => {
+		await storage.clearDeckCards(deckId)
+	}
+
+	const initializeCardStore = () => {
+		initialized.value = true
+	}
+
+	const loadSavedStorageConfiguration = () => {
+		let savedType = localStorage.getItem(
+			LocalStorageKeys.SelectedStorageService
+		) as StorageServiceType
+
+		if (!savedType || !Object.values(StorageServiceType).includes(savedType)) {
+			savedType = DEFAULT_STORAGE
+		}
+
+		try {
+			setupStorageService(savedType)
+			initializeCardStore()
+		} catch {
+			logger.error('Failed to load saved Storage configuration')
+		}
+	}
 
 	onMounted(() => {
-		init()
+		loadSavedStorageConfiguration()
 	})
 
 	return {
@@ -137,5 +177,7 @@ export const useCardStore = defineStore('cards', () => {
 		clearDatabase,
 		getDeck,
 		clearDeckCards,
+		setupStorageService,
+		getCurrentService,
 	}
 })

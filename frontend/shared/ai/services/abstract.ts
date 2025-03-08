@@ -9,7 +9,7 @@ export abstract class AbstractAIService {
 	 * Creates an instance of the AI service.
 	 * @param {AIServiceConfig} config - Configuration settings for the AI service
 	 * @param {boolean} [instantValidation=true] - If true, validates the config immediately upon construction. Defaults to true.
-	 * @throws {Error} When instantValidation is true and the config validation fails
+	 * @throws {AIServiceValidationError} When instantValidation is true and the config validation fails
 	 */
 	constructor(config: AIServiceConfig, instantValidation = true) {
 		if (instantValidation) {

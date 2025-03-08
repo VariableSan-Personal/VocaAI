@@ -1,0 +1,1 @@
+export { StorageServiceFactory } from './factory'
