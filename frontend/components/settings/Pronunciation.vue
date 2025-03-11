@@ -1,9 +1,5 @@
-<script lang="ts" setup>
-	import CardSettings from '~/components/settings/Card.vue'
-</script>
-
 <template>
-	<CardSettings>
+	<SettingsCard>
 		<template #title>Pronunciation</template>
 
 		<div class="space-y-4">
@@ -25,5 +21,5 @@
 				<div class="text-sm text-primary">1.0</div>
 			</div>
 		</div>
-	</CardSettings>
+	</SettingsCard>
 </template>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-	import SelectionDialog from '@/components/settings/SelectionDialog.vue'
 	import type { ConfigField } from '~/shared'
 
 	defineProps<{
@@ -13,7 +12,7 @@
 
 <template>
 	<div class="form-control">
-		<SelectionDialog
+		<SettingsSelectionDialog
 			v-if="field.type === 'select'"
 			v-model="modelValue"
 			:title="field.label"
@@ -33,7 +32,7 @@
 					</a>
 				</li>
 			</template>
-		</SelectionDialog>
+		</SettingsSelectionDialog>
 
 		<div v-else-if="field.type === 'number'">
 			<label class="label px-0">

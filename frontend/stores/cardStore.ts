@@ -23,7 +23,7 @@ export const useCardStore = defineStore('cards', () => {
 	let storage: AbstractStorageService | null = null
 
 	const initialized = ref(false)
-	const currentServiceType = ref<StorageServiceType | undefined>()
+	const currentServiceType = ref<StorageServiceType | null>(null)
 	const cards = ref<Card[]>([])
 	const decks = ref<Deck[]>([])
 	const currentDeck = ref<Deck | null>(null)

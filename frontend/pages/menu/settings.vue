@@ -10,13 +10,11 @@
 	<div class="container">
 		<div class="space-y-6">
 			<SettingsAIService />
-
+			<SettingsStorage />
 			<SettingsAppearance />
 
 			<!-- <SettingsGeneral />
-
 			<SettingsNotification />
-
 			<SettingsPronunciation /> -->
 		</div>
 	</div>
