@@ -1,6 +1,5 @@
 import {
 	AIServiceFactory,
-	AIServiceValidationError,
 	LocalStorageKeys,
 	type AIServiceConfig,
 	type AIServiceType,
@@ -9,77 +8,86 @@ import { useCustomLogger } from '~/composables/useCustomLogger'
 
 export const useAIStore = defineStore('ai', () => {
 	const logger = useCustomLogger('useAIStore')
-	const { showError } = useGlobalStore()
 
-	const currentServiceType = ref<AIServiceType>()
 	const aiFactoryInstance = AIServiceFactory.getInstance()
-	const config = ref<AIServiceConfig | null>(null)
 
 	const initialized = ref(false)
-	const loading = ref(false)
+	const currentServiceType = ref<AIServiceType | undefined>()
+	const config = ref<AIServiceConfig | null>(null)
 
 	const setupAIService = (type: AIServiceType, serviceConfig: AIServiceConfig) => {
-		loading.value = true
 		try {
 			aiFactoryInstance.createService(type, serviceConfig)
+
+			currentServiceType.value = type
+			config.value = serviceConfig
+
+			localStorage.setItem(LocalStorageKeys.SelectedAIService, type)
+			localStorage.setItem(LocalStorageKeys.AIServiceConfig, JSON.stringify(serviceConfig))
 		} catch (error) {
-			if (error instanceof AIServiceValidationError) {
-				showError(error.message)
-			}
+			logger.error(`Failed to setup AI service: ${error}`)
 			throw error
-		} finally {
-			loading.value = false
 		}
-
-		currentServiceType.value = type
-		config.value = serviceConfig
-
-		localStorage.setItem(LocalStorageKeys.SelectedAIService, type)
-		localStorage.setItem(LocalStorageKeys.AIServiceConfig, JSON.stringify(serviceConfig))
 	}
 
 	const getCurrentService = () => {
-		return aiFactoryInstance.getCurrentService()
+		const service = aiFactoryInstance.getCurrentService()
+		if (!service) {
+			logger.warn('Attempting to use AI service before initialization')
+		}
+		return service
 	}
 
 	const getConfigFieldsByServiceName = (serviceName?: AIServiceType) => {
-		if (serviceName) {
-			return aiFactoryInstance.getServiceConfigFields(serviceName)
+		if (!serviceName) {
+			return []
 		}
-		return []
-	}
 
-	const initializeAIStore = () => {
-		initialized.value = true
+		try {
+			return aiFactoryInstance.getServiceConfigFields(serviceName)
+		} catch (error) {
+			logger.error(`Failed to get config fields for ${serviceName}: ${error}`)
+			return []
+		}
 	}
 
 	const loadSavedAIConfiguration = () => {
-		const savedType = localStorage.getItem(LocalStorageKeys.SelectedAIService)
+		const savedType = localStorage.getItem(LocalStorageKeys.SelectedAIService) as AIServiceType
 		const savedConfig = localStorage.getItem(LocalStorageKeys.AIServiceConfig)
 
 		if (!savedType || !savedConfig) {
+			logger.info('No saved AI configuration found')
 			return
 		}
 
 		try {
-			setupAIService(savedType as AIServiceType, JSON.parse(savedConfig))
-			initializeAIStore()
-		} catch {
-			logger.error('Failed to load saved AI configuration')
+			const parsedConfig = JSON.parse(savedConfig) as AIServiceConfig
+			setupAIService(savedType, parsedConfig)
+		} catch (error) {
+			logger.error(`Failed to load saved AI configuration: ${error}`)
 		}
+	}
+
+	const resetAIService = () => {
+		currentServiceType.value = undefined
+		config.value = null
+		localStorage.removeItem(LocalStorageKeys.SelectedAIService)
+		localStorage.removeItem(LocalStorageKeys.AIServiceConfig)
 	}
 
 	onMounted(() => {
 		loadSavedAIConfiguration()
+		initialized.value = true
 	})
 
 	return {
 		currentServiceType,
 		config,
 		initialized,
-		loading,
+
 		setupAIService,
 		getCurrentService,
 		getConfigFieldsByServiceName,
+		resetAIService,
 	}
 })

@@ -35,6 +35,8 @@ export class AIServiceFactory {
 		switch (type) {
 			case AIServiceType.Gemini:
 				return new GeminiService({}, false).getConfigFields()
+			default:
+				throw new AIServiceError(`Unsupported AI service type: ${type}`)
 		}
 	}
 
