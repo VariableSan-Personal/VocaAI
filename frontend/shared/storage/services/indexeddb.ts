@@ -21,6 +21,16 @@ export class IndexedDBStorage implements AbstractStorageService {
 		return await db.cards.toArray()
 	}
 
+	async getDueCards(deckId?: string, date: Date = new Date()): Promise<Card[]> {
+		const query = db.cards.where('due').below(date)
+
+		if (deckId) {
+			return await this.getCardsForDeck(deckId)
+		}
+
+		return await query.toArray()
+	}
+
 	async createCard(card: Card): Promise<void> {
 		await db.cards.add({
 			...card,
@@ -41,8 +51,7 @@ export class IndexedDBStorage implements AbstractStorageService {
 	}
 
 	async getDecks(): Promise<Deck[]> {
-		const decks = await db.decks.toArray()
-		return decks.filter((deck) => !deck.deleted)
+		return await db.decks.toArray()
 	}
 
 	async createDeck(deck: Deck): Promise<void> {
@@ -61,8 +70,7 @@ export class IndexedDBStorage implements AbstractStorageService {
 	}
 
 	async getCardsForDeck(deckId: string): Promise<Card[]> {
-		const cards = await db.cards.where('deckId').equals(deckId).toArray()
-		return cards.filter((card) => !card.deleted)
+		return await db.cards.where('deckId').equals(deckId).toArray()
 	}
 
 	async clearDeckCards(deckId: string): Promise<void> {

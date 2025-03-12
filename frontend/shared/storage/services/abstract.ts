@@ -6,6 +6,7 @@ export abstract class AbstractStorageService {
 
 	abstract getCard(id: string): Promise<Card | null>
 	abstract getCards(): Promise<Card[]>
+	abstract getDueCards(deckId?: string, date?: Date): Promise<Card[]>
 	abstract createCard(card: Card): Promise<void>
 	abstract updateCard(card: Card): Promise<void>
 

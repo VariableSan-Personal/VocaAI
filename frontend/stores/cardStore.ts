@@ -95,6 +95,14 @@ export const useCardStore = defineStore('cards', () => {
 		cards.value = await service.getCardsForDeck(deck.id)
 	}
 
+	const loadDueCardsForDeck = async (deckId: string, date?: Date) => {
+		const service = ensureStorageInitialized()
+		const deck = await getDeck(deckId)
+
+		currentDeck.value = deck
+		cards.value = await service.getDueCards(deck.id)
+	}
+
 	const addCard = async (newCard: BaseCard, deckId: string) => {
 		const service = ensureStorageInitialized()
 		const date = new Date()
@@ -129,7 +137,7 @@ export const useCardStore = defineStore('cards', () => {
 
 		if (cardIndex === -1) return
 
-		const card = cards.value[cardIndex]
+		const card = toRaw(cards.value[cardIndex])
 		const dateNow = Date.now()
 		const newState = fsrs.next(card, dateNow, grade)
 
@@ -201,5 +209,6 @@ export const useCardStore = defineStore('cards', () => {
 		clearDeckCards,
 		setupStorageService,
 		getCurrentService,
+		loadDueCardsForDeck,
 	}
 })
