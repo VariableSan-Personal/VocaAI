@@ -82,7 +82,7 @@ export const useCardStore = defineStore('cards', () => {
 			modified: date.getTime(),
 		}
 
-		await service.saveDeck(deck)
+		await service.createDeck(deck)
 		decks.value.push(deck)
 		return deck
 	}
@@ -108,14 +108,14 @@ export const useCardStore = defineStore('cards', () => {
 			modified: date.getTime(),
 		}
 
-		await service.saveCard(card)
+		await service.createCard(card)
 		cards.value.push(card)
 		return card
 	}
 
 	const updateCard = async (updatedCard: Card) => {
 		const service = ensureStorageInitialized()
-		await service.saveCard(updatedCard)
+		await service.updateCard(updatedCard)
 
 		const index = cards.value.findIndex((c) => c.id === updatedCard.id)
 		if (index !== -1) {
@@ -139,7 +139,7 @@ export const useCardStore = defineStore('cards', () => {
 			modified: dateNow,
 		}
 
-		await service.saveCard(updatedCard)
+		await service.updateCard(updatedCard)
 		cards.value[cardIndex] = updatedCard
 	}
 
