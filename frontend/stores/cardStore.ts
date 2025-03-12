@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
-import type { Grade } from 'ts-fsrs'
-import { createEmptyCard, FSRS, generatorParameters } from 'ts-fsrs'
+import { createEmptyCard, FSRS, generatorParameters, type Grade } from 'ts-fsrs'
 import {
 	FSRS_PARAMETERS,
 	LocalStorageKeys,
