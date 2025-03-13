@@ -1,9 +1,6 @@
-<script lang="ts" setup>
-	import CardSettings from '~/components/settings/Card.vue'
-</script>
 
 <template>
-	<CardSettings>
+	<SettingsCard>
 		<template #title>Notifications</template>
 
 		<div class="space-y-4">
@@ -26,5 +23,5 @@
 				</div>
 			</div>
 		</div>
-	</CardSettings>
+	</SettingsCard>
 </template>

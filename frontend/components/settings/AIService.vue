@@ -1,14 +1,11 @@
 <script lang="ts" setup>
 	import { AIServiceType, type AIServiceConfig, type ConfigField } from '@/shared'
-	import CardSettings from '~/components/settings/Card.vue'
-	import SelectionDialog from '~/components/settings/SelectionDialog.vue'
-	import SettingsDynamicFormField from '~/components/settings/SettingsDynamicFormField.vue'
 
 	const aiStore = useAIStore()
 	const { showSuccess } = useGlobalStore()
 	const logger = useCustomLogger('AIService Page')
 
-	const items = Object.values(AIServiceType)
+	const aiServiceTypes = Object.values(AIServiceType)
 
 	// TODO: Replace with reactive and replace watch with computed
 	const selectedService = ref(aiStore.currentServiceType)
@@ -47,13 +44,13 @@
 </script>
 
 <template>
-	<CardSettings>
+	<SettingsCard>
 		<template #title>AI Service Settings</template>
 
-		<SelectionDialog
+		<SettingsSelectionDialog
 			v-model="selectedService"
 			title="AI Service"
-			:list="items"
+			:list="aiServiceTypes"
 			@update:model-value="onServiceChange($event as AIServiceType)"
 		/>
 
@@ -66,5 +63,5 @@
 		<div class="card-actions mt-6 justify-end">
 			<Button variant="primary" @click="handleServiceChange">Apply</Button>
 		</div>
-	</CardSettings>
+	</SettingsCard>
 </template>

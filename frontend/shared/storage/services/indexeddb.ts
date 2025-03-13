@@ -1,84 +1,79 @@
-import { openDB, type IDBPDatabase } from 'idb'
+import { db } from '../lib'
 import type { Card, Deck } from '../lib/types'
 import type { AbstractStorageService } from './abstract'
 
 export class IndexedDBStorage implements AbstractStorageService {
-	private db: IDBPDatabase | null = null
-	private DB_NAME = 'flashcards'
-	private CARDS_STORE = 'cards'
-	private DECKS_STORE = 'decks'
-
 	async init(): Promise<void> {
-		this.db = await openDB(this.DB_NAME, 1, {
-			upgrade(db) {
-				const cardsStore = db.createObjectStore('cards', { keyPath: 'id' })
-				cardsStore.createIndex('due', 'due')
-				cardsStore.createIndex('modified', 'modified')
-				cardsStore.createIndex('deckId', 'deckId')
-
-				const decksStore = db.createObjectStore('decks', { keyPath: 'id' })
-				decksStore.createIndex('modified', 'modified')
-			},
-		})
+		await db.open()
 	}
 
 	async clearDatabase(): Promise<void> {
-		this.db?.close()
-		indexedDB.deleteDatabase(this.DB_NAME)
+		await db.delete()
+
+		await db.open()
 	}
 
 	async getCard(id: string): Promise<Card | null> {
-		return this.db?.get(this.CARDS_STORE, id) || null
+		return (await db.cards.get(id)) || null
 	}
 
 	async getCards(): Promise<Card[]> {
-		return this.db?.getAll(this.CARDS_STORE) || []
+		return await db.cards.toArray()
 	}
 
-	async saveCard(card: Card): Promise<void> {
-		await this.db?.put(this.CARDS_STORE, {
+	async getDueCards(deckId?: string, date: Date = new Date()): Promise<Card[]> {
+		const query = db.cards.where('due').below(date)
+
+		if (deckId) {
+			return await this.getCardsForDeck(deckId)
+		}
+
+		return await query.toArray()
+	}
+
+	async createCard(card: Card): Promise<void> {
+		await db.cards.add({
+			...card,
+			modified: Date.now(),
+			created: Date.now(),
+		})
+	}
+
+	async updateCard(card: Card): Promise<void> {
+		await db.cards.put({
 			...card,
 			modified: Date.now(),
 		})
 	}
 
 	async getDeck(id: string): Promise<Deck | null> {
-		return this.db?.get(this.DECKS_STORE, id) || null
+		return (await db.decks.get(id)) || null
 	}
 
 	async getDecks(): Promise<Deck[]> {
-		const decks = (await this.db?.getAll(this.DECKS_STORE)) || []
-		return decks.filter((deck) => !deck.deleted)
+		return await db.decks.toArray()
 	}
 
-	async saveDeck(deck: Deck): Promise<void> {
-		await this.db?.put(this.DECKS_STORE, {
+	async createDeck(deck: Deck): Promise<void> {
+		await db.decks.add({
+			...deck,
+			created: Date.now(),
+			modified: Date.now(),
+		})
+	}
+
+	async updateDeck(deck: Deck): Promise<void> {
+		await db.decks.put({
 			...deck,
 			modified: Date.now(),
 		})
 	}
 
 	async getCardsForDeck(deckId: string): Promise<Card[]> {
-		const tx = this.db?.transaction(this.CARDS_STORE, 'readonly')
-		const index = tx?.store.index('deckId')
-		const cards: Card[] = (await index?.getAll(deckId)) || []
-		return cards.filter((card) => !card.deleted)
+		return await db.cards.where('deckId').equals(deckId).toArray()
 	}
 
 	async clearDeckCards(deckId: string): Promise<void> {
-		const cards = await this.getCardsForDeck(deckId)
-
-		if (!cards.length) return
-
-		const tx = this.db?.transaction(this.CARDS_STORE, 'readwrite')
-		const store = tx?.store
-
-		if (!store) return
-
-		for (const card of cards) {
-			await store.delete(card.id)
-		}
-
-		await tx?.done
+		await db.cards.where('deckId').equals(deckId).delete()
 	}
 }

@@ -12,7 +12,6 @@ export interface Card extends BaseCard, FSRSCard {
 	deckId: string
 	created: number
 	modified: number
-	deleted?: boolean
 }
 
 export interface Deck {
@@ -20,6 +19,5 @@ export interface Deck {
 	name: string
 	created: number
 	modified: number
-	deleted?: boolean
 	icon: string
 }

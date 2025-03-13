@@ -1,9 +1,5 @@
-<script lang="ts" setup>
-	import CardSettings from '~/components/settings/Card.vue'
-</script>
-
 <template>
-	<CardSettings>
+	<SettingsCard>
 		<template #title>General</template>
 
 		<div class="space-y-4">
@@ -87,5 +83,5 @@
 				<input type="checkbox" class="toggle" />
 			</div>
 		</div>
-	</CardSettings>
+	</SettingsCard>
 </template>

@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import type { Grade } from 'ts-fsrs'
-import { createEmptyCard, FSRS, generatorParameters } from 'ts-fsrs'
+import { createEmptyCard, FSRS, generatorParameters, type Grade } from 'ts-fsrs'
 import {
 	FSRS_PARAMETERS,
 	LocalStorageKeys,
 	StorageError,
 	StorageServiceFactory,
 	StorageServiceType,
+	type AbstractStorageService,
 	type BaseCard,
 	type Card,
 	type Deck,
@@ -19,42 +19,49 @@ export const useCardStore = defineStore('cards', () => {
 
 	const storageFactoryInstance = StorageServiceFactory.getInstance()
 	const fsrs = new FSRS(generatorParameters(FSRS_PARAMETERS))
-	const currentServiceType = ref<StorageServiceType>()
-	let storage = storageFactoryInstance.createService(StorageServiceType.IndexedDB)
+	let storage: AbstractStorageService | null = null
 
-	const loading = ref(false)
 	const initialized = ref(false)
-
+	const currentServiceType = ref<StorageServiceType | null>(null)
 	const cards = ref<Card[]>([])
 	const decks = ref<Deck[]>([])
 	const currentDeck = ref<Deck | null>(null)
 
-	const loadDecks = async () => {
-		const res = await storage.getDecks()
-		decks.value = res
+	const ensureStorageInitialized = () => {
+		if (!storage) {
+			throw new StorageError('Storage service not initialized')
+		}
+		return storage
 	}
 
 	const getCurrentService = () => {
-		return storageFactoryInstance.getCurrentService()
+		return storage
 	}
 
-	/**
-	 * Loads cards for a specific deck and sets it as the current deck.
-	 * @throws {StorageError} When no deck exists with the provided ID
-	 */
-	const loadCardsForDeck = async (deckId: string) => {
-		const deck = await getDeck(deckId)
+	const setupStorageService = async (type: StorageServiceType) => {
+		try {
+			const newStorage = storageFactoryInstance.createService(type)
+			await newStorage.init()
 
-		currentDeck.value = deck
-		cards.value = await storage.getCardsForDeck(deck.id)
+			storage = newStorage
+			currentServiceType.value = type
+			localStorage.setItem(LocalStorageKeys.SelectedStorageService, type)
+
+			await loadDecks()
+		} catch (error) {
+			logger.error(`Failed to initialize storage service: ${error}`)
+			throw new StorageError('Failed to initialize storage service')
+		}
 	}
 
-	/**
-	 * Gets information about a specific deck by its ID
-	 * @throws {StorageError} When no deck exists with the provided ID
-	 */
+	const loadDecks = async () => {
+		const service = ensureStorageInitialized()
+		decks.value = await service.getDecks()
+	}
+
 	const getDeck = async (deckId: string) => {
-		const deck = await storage.getDeck(deckId)
+		const service = ensureStorageInitialized()
+		const deck = await service.getDeck(deckId)
 
 		if (!deck) {
 			throw new StorageError('There is no deck with this ID')
@@ -64,7 +71,9 @@ export const useCardStore = defineStore('cards', () => {
 	}
 
 	const addDeck = async (name: string, icon: string) => {
+		const service = ensureStorageInitialized()
 		const date = new Date()
+
 		const deck: Deck = {
 			id: crypto.randomUUID(),
 			name,
@@ -73,12 +82,31 @@ export const useCardStore = defineStore('cards', () => {
 			modified: date.getTime(),
 		}
 
-		await storage.saveDeck(deck)
+		await service.createDeck(deck)
 		decks.value.push(deck)
+		return deck
+	}
+
+	const loadCardsForDeck = async (deckId: string) => {
+		const service = ensureStorageInitialized()
+		const deck = await getDeck(deckId)
+
+		currentDeck.value = deck
+		cards.value = await service.getCardsForDeck(deck.id)
+	}
+
+	const loadDueCardsForDeck = async (deckId: string, date?: Date) => {
+		const service = ensureStorageInitialized()
+		const deck = await getDeck(deckId)
+
+		currentDeck.value = deck
+		cards.value = await service.getDueCards(deck.id)
 	}
 
 	const addCard = async (newCard: BaseCard, deckId: string) => {
+		const service = ensureStorageInitialized()
 		const date = new Date()
+
 		const card: Card = {
 			...createEmptyCard(),
 			...newCard,
@@ -88,96 +116,99 @@ export const useCardStore = defineStore('cards', () => {
 			modified: date.getTime(),
 		}
 
-		await storage.saveCard(card)
+		await service.createCard(card)
 		cards.value.push(card)
+		return card
+	}
+
+	const updateCard = async (updatedCard: Card) => {
+		const service = ensureStorageInitialized()
+		await service.updateCard(updatedCard)
+
+		const index = cards.value.findIndex((c) => c.id === updatedCard.id)
+		if (index !== -1) {
+			cards.value[index] = updatedCard
+		}
 	}
 
 	const reviewCard = async (cardId: string, grade: Grade) => {
-		// TODO: optimize this
-		const card = cards.value.find((c) => c.id === cardId)
-		if (!card) return
+		const service = ensureStorageInitialized()
+		const cardIndex = cards.value.findIndex((c) => c.id === cardId)
 
+		if (cardIndex === -1) return
+
+		const card = toRaw(cards.value[cardIndex])
 		const dateNow = Date.now()
 		const newState = fsrs.next(card, dateNow, grade)
+
 		const updatedCard: Card = {
 			...card,
 			...newState.card,
 			modified: dateNow,
 		}
 
-		await storage.saveCard(updatedCard)
-		Object.assign(card, updatedCard)
+		await service.updateCard(updatedCard)
+		cards.value[cardIndex] = updatedCard
 	}
 
 	const clearDatabase = async () => {
+		const service = ensureStorageInitialized()
 		try {
-			await storage.clearDatabase()
+			await service.clearDatabase()
 			cards.value = []
-		} catch (e) {
-			logger.error(e)
-		}
-	}
-
-	const setupStorageService = async (type: StorageServiceType) => {
-		loading.value = true
-		try {
-			storage = storageFactoryInstance.createService(type)
-			currentServiceType.value = type
-			localStorage.setItem(LocalStorageKeys.SelectedStorageService, type)
-
-			await storage.init()
-			await loadDecks()
+			decks.value = []
+			currentDeck.value = null
 		} catch (error) {
-			logger.error(error)
-		} finally {
-			loading.value = true
+			logger.error(`Failed to clear database: ${error}`)
+			throw new StorageError('Failed to clear database')
 		}
 	}
 
 	const clearDeckCards = async (deckId: string) => {
-		await storage.clearDeckCards(deckId)
+		const service = ensureStorageInitialized()
+		await service.clearDeckCards(deckId)
+
+		if (currentDeck.value?.id === deckId) {
+			cards.value = []
+		}
 	}
 
-	const initializeCardStore = () => {
-		initialized.value = true
-	}
-
-	const loadSavedStorageConfiguration = () => {
-		let savedType = localStorage.getItem(
+	const loadSavedStorageConfiguration = async () => {
+		const userPreferredStorage = localStorage.getItem(
 			LocalStorageKeys.SelectedStorageService
 		) as StorageServiceType
-
-		if (!savedType || !Object.values(StorageServiceType).includes(savedType)) {
-			savedType = DEFAULT_STORAGE
-		}
+		const savedType = userPreferredStorage || DEFAULT_STORAGE
 
 		try {
-			setupStorageService(savedType)
-			initializeCardStore()
-		} catch {
-			logger.error('Failed to load saved Storage configuration')
+			await setupStorageService(savedType)
+		} catch (error) {
+			logger.error(`Failed to load saved Storage configuration: ${error}`)
 		}
 	}
 
-	onMounted(() => {
-		loadSavedStorageConfiguration()
+	onMounted(async () => {
+		await loadSavedStorageConfiguration()
+		initialized.value = true
 	})
 
 	return {
 		cards,
 		decks,
 		currentDeck,
-		loading,
 		initialized,
+		currentServiceType,
+
 		loadDecks,
 		loadCardsForDeck,
 		addDeck,
 		addCard,
+		updateCard,
 		reviewCard,
 		clearDatabase,
 		getDeck,
 		clearDeckCards,
 		setupStorageService,
 		getCurrentService,
+		loadDueCardsForDeck,
 	}
 })

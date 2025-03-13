@@ -8,63 +8,84 @@
 		title: 'Session',
 	} satisfies CustomPageMeta)
 
-	// TODO: Watch cardStore initialization to ensure cards are loaded
+	const route = useRoute()
 	const cardStore = useCardStore()
-	const dateNow = ref(Date.now())
+	const logger = useCustomLogger('learn-deckId-session')
+
 	const showAnswer = ref(false)
 	const currentCardIndex = ref(0)
 	const isSessionComplete = ref(false)
 
-	const dueCards = computed(() => cardStore.cards.filter((c) => c.due.getTime() <= dateNow.value))
+	const deckId = computed(() => route.params.deckId as string)
 
 	const currentCard = computed(() => {
-		if (dueCards.value.length === 0) return null
-		return dueCards.value[currentCardIndex.value]
+		if (cardStore.cards.length === 0) return null
+		return cardStore.cards[currentCardIndex.value]
 	})
-
-	const updateDateNow = () => {
-		dateNow.value = Date.now()
-	}
 
 	const handleReview = async (grade: Grade) => {
 		if (!currentCard.value?.id) {
 			return
 		}
 
-		await cardStore.reviewCard(currentCard.value.id, grade)
+		try {
+			await cardStore.reviewCard(currentCard.value.id, grade)
+		} catch (error) {
+			logger.error(error)
+		}
 
-		if (currentCardIndex.value < dueCards.value.length - 1) {
+		if (currentCardIndex.value < cardStore.cards.length - 1) {
 			currentCardIndex.value++
 		} else {
 			isSessionComplete.value = true
 		}
 
 		showAnswer.value = false
-		updateDateNow()
 	}
 
 	const revealAnswer = () => {
 		showAnswer.value = true
 	}
+
+	watch(
+		() => cardStore.initialized,
+		async (val) => {
+			if (val) {
+				try {
+					await cardStore.loadDueCardsForDeck(deckId.value)
+				} catch (error) {
+					logger.error(error)
+				}
+			}
+		},
+		{ immediate: true }
+	)
 </script>
 
 <template>
 	<div class="container mx-auto max-w-2xl py-8">
 		<section class="space-y-6">
-			<div v-if="dueCards.length > 0" class="text-center">
-				<p class="text-sm opacity-70">Card {{ currentCardIndex + 1 }} of {{ dueCards.length }}</p>
+			<div v-if="cardStore.cards.length > 0" class="text-center">
+				<p class="text-sm opacity-70">
+					Card {{ currentCardIndex + 1 }} of {{ cardStore.cards.length }}
+				</p>
 				<progress
 					class="progress w-full"
 					:value="currentCardIndex"
-					:max="dueCards.length - 1"
+					:max="cardStore.cards.length - 1"
 				></progress>
 			</div>
 
-			<div v-if="dueCards.length === 0 || isSessionComplete" class="card bg-base-200 shadow-xl">
+			<div
+				v-if="cardStore.cards.length === 0 || isSessionComplete"
+				class="card bg-base-200 shadow-xl"
+			>
 				<div class="card-body items-center text-center">
 					<h2 class="text-2xl font-bold">Session Complete!</h2>
 					<p class="mb-4">You've reviewed all cards due for today.</p>
-					<NuxtLink to="/decks" class="btn btn-primary">Back to Decks</NuxtLink>
+					<NuxtLink :to="{ name: 'learn-deckId', params: { deckId } }" class="btn btn-primary">
+						Back to Decks
+					</NuxtLink>
 				</div>
 			</div>
 
