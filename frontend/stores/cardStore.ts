@@ -59,6 +59,17 @@ export const useCardStore = defineStore('cards', () => {
 		decks.value = await service.getDecks()
 	}
 
+	const loadDeck = async (deckId: string) => {
+		const service = ensureStorageInitialized()
+		const deck = await service.getDeck(deckId)
+
+		if (!deck) {
+			throw new StorageError('There is no deck with this ID')
+		}
+
+		currentDeck.value = deck
+	}
+
 	const getDeck = async (deckId: string) => {
 		const service = ensureStorageInitialized()
 		const deck = await service.getDeck(deckId)
@@ -100,7 +111,7 @@ export const useCardStore = defineStore('cards', () => {
 		const deck = await getDeck(deckId)
 
 		currentDeck.value = deck
-		cards.value = await service.getDueCards(deck.id)
+		cards.value = await service.getDueCards(deck.id, date)
 	}
 
 	const addCard = async (newCard: BaseCard, deckId: string) => {
@@ -198,17 +209,21 @@ export const useCardStore = defineStore('cards', () => {
 		initialized,
 		currentServiceType,
 
+		setupStorageService,
+		getCurrentService,
+		clearDatabase,
+
 		loadDecks,
-		loadCardsForDeck,
+		loadDeck,
 		addDeck,
+		getDeck,
+
 		addCard,
 		updateCard,
 		reviewCard,
-		clearDatabase,
-		getDeck,
-		clearDeckCards,
-		setupStorageService,
-		getCurrentService,
+
 		loadDueCardsForDeck,
+		clearDeckCards,
+		loadCardsForDeck,
 	}
 })
