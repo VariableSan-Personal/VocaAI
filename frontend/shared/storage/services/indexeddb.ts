@@ -25,7 +25,7 @@ export class IndexedDBStorage implements AbstractStorageService {
 		const query = db.cards.where('due').below(date)
 
 		if (deckId) {
-			return await this.getCardsForDeck(deckId)
+			return query.and((card) => card.deckId === deckId).toArray()
 		}
 
 		return await query.toArray()

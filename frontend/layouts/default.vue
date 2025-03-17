@@ -5,6 +5,7 @@
 
 <template>
 	<!-- TODO: Add desktop adaptation for better user experience on larger screens -->
+	<!-- TODO: Add error layout -->
 	<div class="flex min-h-screen w-full flex-col">
 		<Header class="mb-2" />
 

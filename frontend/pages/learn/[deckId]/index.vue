@@ -23,7 +23,7 @@
 	const initializeDeck = async () => {
 		try {
 			// TODO: send repeated actions to composable
-			await cardStore.loadCardsForDeck(deckId.value)
+			await cardStore.loadDeck(deckId.value)
 		} catch (error) {
 			if (error instanceof StorageError) {
 				showError(error.message)
@@ -35,17 +35,17 @@
 	watch(
 		() => cardStore.initialized,
 		(val) => {
-			if (val && deckId.value) {
-				initializeDeck()
-			}
-		}
+			if (!val) return
+			initializeDeck()
+		},
+		{ immediate: true }
 	)
 </script>
 
 <template>
 	<div>
 		<ClientOnly>
-			<Teleport to="#header-custom-title">
+			<Teleport :key="cardStore.currentDeck?.id" to="#header-custom-title">
 				{{ cardStore.currentDeck?.name }}
 			</Teleport>
 		</ClientOnly>
