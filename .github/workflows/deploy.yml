@@ -1,42 +1,56 @@
-name: Deploy Application
+name: Build and Deploy Nuxt Application
 
 on:
   push:
     branches: [master]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Cloning a repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker Image (Production)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          target: prod
+          tags: voca-ai:latest
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Save Docker Image to Archive
+        run: |
+          docker save voca-ai | gzip > voca-ai.tar.gz
+
+      - name: Set up SSH Agent
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SERVER_KEY }}
 
-      - name: Add host key
+      - name: Add Server to Known Hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Copying files to the server
+      - name: Copy Files to VPS
         run: |
-          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" . ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
+          rsync -avz -e "ssh" voca-ai.tar.gz docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.SERVER_PATH }}
 
-      - name: Build and restart containers
+      - name: Deploy on VPS
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             cd ${{ secrets.SERVER_PATH }}
-            docker compose down
-            docker compose up --build -d
+            docker load < voca-ai.tar.gz
+            docker compose down || true
+            docker compose up -d
+            docker container prune -f
+            docker image prune -f --filter "dangling=true"
+            rm voca-ai.tar.gz
           EOF
-
-      - name: Cleanup
-        run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "
-            docker container prune -f &&
-            docker image prune -f --filter 'dangling=true'
-          "

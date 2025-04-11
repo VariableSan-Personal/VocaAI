@@ -7,6 +7,7 @@ export default defineNuxtConfig({
 	experimental: {
 		appManifest: false,
 	},
+  sourcemap: false,
 	modules: [
 		'@nuxt/eslint',
 		'@nuxtjs/tailwindcss',
